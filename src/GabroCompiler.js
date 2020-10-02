@@ -11,7 +11,13 @@ function Compile(input, config) {
 function ConvertToJsx(component, config) {
   let syntax = CreateSyntax(component, config);
   syntax = syntax.replace("{children}", "Test");
-  syntax = syntax.replace("{atr}", "");
+
+  let props = "";
+  for (let prop of component.props) {
+    let name = prop.name.replace("?", "")
+    props += " " + name + '="' + prop.val + '" ';
+  }
+  syntax = syntax.replace("{atr}", props);
 
   return syntax;
 }

@@ -49,6 +49,7 @@ class Builder extends React.Component {
     for (let i = 0; i < new_build.length; i++) {
       if (new_build[i].id == id) {
         new_build[i].props = val;
+        ipcRenderer.send("send-build", new_build);
         this.setState({
           build: new_build
         });
@@ -209,13 +210,14 @@ class PropBlock extends React.Component<PropBlockProps> {
   }
   render() {
     return (
-      <div><b>{this.state.name}: </b>
+      <div className="prop-block">
         <TextField
           onChange={this.Changed.bind(this)}
           value={this.state.val}
           size="small"
           id="outlined-basic"
-          label={this.props.type}
+          label={this.props.name}
+          placeholder={this.props.type}
           variant="outlined" />
       </div>
     )
