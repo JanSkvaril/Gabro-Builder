@@ -6,23 +6,18 @@ import { Button, TextField } from '@material-ui/core';
 import { ReactNode } from 'react';
 const ipcRenderer = require('electron').ipcRenderer;
 
-class Builder extends React.Component {
-  state: any;
 
-  constructor(props: any) {
+class Builder extends React.Component<BuildProps> {
+  state: any;
+  SendBuild: any;
+  constructor(props: BuildProps) {
     super(props);
     this.state = {
       new_component: 0,
-      config: null,
-      build: []
+      config: props.config,
+      build: [],
     }
-
-    ipcRenderer.on('receive_config', (event, data) => {
-      console.log(data);
-      this.setState({ config: data })
-
-    });
-    ipcRenderer.send("get-config");
+    this.SendBuild = props.SendBuild;
   }
   Add() {
     console.log("Sending build");
@@ -34,9 +29,10 @@ class Builder extends React.Component {
     new_build.push({
       name: selected,
       id: id,
-      props: []
+      props: [],
+      children: null
     });
-    ipcRenderer.send("send-build", new_build);
+    this.SendBuild(new_build);
     this.setState({
       build: new_build
     });
@@ -49,7 +45,7 @@ class Builder extends React.Component {
     for (let i = 0; i < new_build.length; i++) {
       if (new_build[i].id == id) {
         new_build[i].props = val;
-        ipcRenderer.send("send-build", new_build);
+        this.SendBuild(new_build);
         this.setState({
           build: new_build
         });
@@ -57,7 +53,22 @@ class Builder extends React.Component {
       }
     }
   }
+  RecieveBuild(id, build) {
+    let new_build = [...this.state.build];
+    for (let i = 0; i < new_build.length; i++) {
+      if (new_build[i].id == id) {
+        new_build[i].children = build;
+        this.SendBuild(new_build);
+        this.setState({
+          build: new_build
+        });
+        break;
+      }
+    }
+
+  }
   render() {
+    console.log(this.state.config)
     if (this.state.config == null) return <div>error</div>;
     let component_names = Object.keys(this.state.config.components);
     let menu: ReactNode[] = [];
@@ -77,6 +88,8 @@ class Builder extends React.Component {
           pos_props={posible_props}
           active_props={component.props}
           OnChange={this.PropsChanged.bind(this)}
+          config={this.state.config}
+          SubBuildUpdate={this.RecieveBuild.bind(this)}
         />)
     }
     return (
@@ -103,9 +116,15 @@ class Builder extends React.Component {
   }
 }
 
+interface BuildProps {
+  config: any,
+  SendBuild: (build: any) => void
+}
+
 class ComponentBlock extends React.Component<BlockProps> {
   state: any;
   Update: (id: number, val: any) => void;
+  SubBuildUpdate: (id: number, build: any) => void;
   constructor(props: BlockProps) {
     super(props);
     this.state = {
@@ -113,9 +132,12 @@ class ComponentBlock extends React.Component<BlockProps> {
       id: props.id,
       pos_props: props.pos_props,
       new_prop: 0,
-      active_props: props.active_props
+      active_props: props.active_props,
+      config: props.config,
+      color: "rgb(" + (Math.random() * 100 + 150) + "," + (Math.random() * 100 + 150) + "," + (Math.random() * 100 + 150) + ")"
     }
     this.Update = this.props.OnChange;
+    this.SubBuildUpdate = props.SubBuildUpdate;
   }
   NewChanged(e) {
     this.setState({ new_prop: e.target.value })
@@ -138,6 +160,9 @@ class ComponentBlock extends React.Component<BlockProps> {
       }
     }
   }
+  SubBuildSend(build) {
+    this.SubBuildUpdate(this.state.id, build);
+  }
   render() {
     let menu: any = [];
     let i = 0;
@@ -146,13 +171,16 @@ class ComponentBlock extends React.Component<BlockProps> {
       i++;
     }
 
+    let styles = {
+      background: this.state.color
+    }
     let active_props: any = [];
     for (let prop of this.state.active_props) {
       active_props.push(<PropBlock name={prop.name} type={prop.type} value={prop.val} onChange={this.PropChanged.bind(this)} />)
     }
 
     return (
-      <div className="component-block">
+      <div className="component-block" style={styles}>
         <h3>{this.state.name} {this.state.id}</h3>
         <div className="component-props">
           <div>
@@ -165,7 +193,7 @@ class ComponentBlock extends React.Component<BlockProps> {
             >
               {menu}
             </Select>
-            <Button onClick={this.Add.bind(this)} variant="outlined">Add</Button>
+            <Button onClick={this.Add.bind(this)} variant="text">Add</Button>
           </div>
           <div>
             {active_props}
@@ -173,6 +201,7 @@ class ComponentBlock extends React.Component<BlockProps> {
         </div>
         <div>
           <h4>Content:</h4>
+          <Builder SendBuild={this.SubBuildSend.bind(this)} config={this.state.config} />
         </div>
       </div>);
   }
@@ -190,7 +219,9 @@ interface BlockProps {
     type: string,
     val: string
   }[],
-  OnChange: (id: number, val: any) => void
+  OnChange: (id: number, val: any) => void,
+  SubBuildUpdate: (id: number, build: any) => void;
+  config: any
 }
 
 class PropBlock extends React.Component<PropBlockProps> {
@@ -230,4 +261,35 @@ interface PropBlockProps {
   onChange: (name: string, val: string) => void
 }
 
-export default Builder;
+
+class BuilderWindow extends React.Component {
+  state: any;
+  constructor(props: any) {
+
+    super(props);
+    this.state = {
+      config: null,
+    }
+
+    ipcRenderer.on('receive_config', (event, data) => {
+      console.log(data);
+      this.setState({ config: data })
+
+    });
+    ipcRenderer.send("get-config");
+  }
+  SendToCompile(build) {
+    ipcRenderer.send("send-build", build);
+  }
+  render() {
+    if (this.state.config == null) {
+      return <div></div>
+    }
+    return (<div>
+      <Builder config={this.state.config} SendBuild={this.SendToCompile.bind(this)} />
+    </div>)
+  }
+
+}
+
+export default BuilderWindow;

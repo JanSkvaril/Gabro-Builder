@@ -10,7 +10,18 @@ function Compile(input, config) {
 
 function ConvertToJsx(component, config) {
   let syntax = CreateSyntax(component, config);
-  syntax = syntax.replace("{children}", "Test");
+
+  if (component.children == null) {
+    syntax = syntax.replace("{children}", "");
+  }
+  else {
+    let result = "";
+    for (let children of component.children) {
+      result += ConvertToJsx(ch, children);
+      result += "\n";
+    }
+    syntax = syntax.replace("{children}", result);
+  }
 
   let props = "";
   for (let prop of component.props) {
