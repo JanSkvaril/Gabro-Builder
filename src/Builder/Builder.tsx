@@ -131,19 +131,37 @@ class ComponentBlock extends React.Component<BlockProps> {
       name: props.name,
       id: props.id,
       pos_props: props.pos_props,
-      new_prop: 0,
+      new_prop: -1,
       active_props: props.active_props,
       config: props.config,
       color: "rgb(" + (Math.random() * 100 + 150) + "," + (Math.random() * 100 + 150) + "," + (Math.random() * 100 + 150) + ")"
     }
+    for (let i = 0; i < this.state.pos_props.length; i++) {
+      this.state.pos_props[i].used = false;
+
+    }
     this.Update = this.props.OnChange;
     this.SubBuildUpdate = props.SubBuildUpdate;
+
+  }
+  componentDidMount() {
+    if (this.state.name == "Text") {
+      console.log("stalo se")
+      this.Add(0);
+    }
   }
   NewChanged(e) {
-    this.setState({ new_prop: e.target.value })
+    let anyUnusedPropIndex = -1;
+
+    this.setState({ new_prop: anyUnusedPropIndex }, () => {
+      this.Add(e.target.value);
+
+    })
+
   }
-  Add() {
-    let new_prop = this.state.pos_props[this.state.new_prop];
+  Add(prop_index) {
+    this.state.pos_props[prop_index].used = true;
+    let new_prop = this.state.pos_props[prop_index];
     let new_active_props = [...this.state.active_props];
     new_active_props.push(new_prop);
     this.setState({ active_props: new_active_props });
@@ -165,11 +183,15 @@ class ComponentBlock extends React.Component<BlockProps> {
   }
   render() {
     let menu: any = [];
+    menu.push(<MenuItem value={-1}>{<i>Select new prop</i>}</MenuItem>);
     let i = 0;
     for (let prop of this.state.pos_props) {
-      menu.push(<MenuItem value={i}>{prop.name}</MenuItem>)
+      if (prop.name != "children?" && prop.used == false) {
+        menu.push(<MenuItem value={i}>{prop.name}</MenuItem>)
+      }
       i++;
     }
+
 
     let styles = {
       background: this.state.color
@@ -178,32 +200,46 @@ class ComponentBlock extends React.Component<BlockProps> {
     for (let prop of this.state.active_props) {
       active_props.push(<PropBlock name={prop.name} type={prop.type} value={prop.val} onChange={this.PropChanged.bind(this)} />)
     }
-
-    return (
-      <div className="component-block" style={styles}>
-        <h3>{this.state.name} {this.state.id}</h3>
-        <div className="component-props">
-          <div>
-            <h4>Props:  </h4>
-            <Select
-              labelId="demo-simple-select-label"
-              id="demo-simple-select"
-              value={this.state.new_prop}
-              onChange={this.NewChanged.bind(this)}
-            >
-              {menu}
-            </Select>
-            <Button onClick={this.Add.bind(this)} variant="text">Add</Button>
-          </div>
-          <div>
-            {active_props}
-          </div>
-        </div>
+    if (this.state.name == "Text") {
+      return (
         <div>
-          <h4>Content:</h4>
-          <Builder SendBuild={this.SubBuildSend.bind(this)} config={this.state.config} />
+          <div className="component-block" style={styles}>
+            <div className="component-props">
+              <div>
+                {active_props}
+              </div>
+            </div>
+          </div>
         </div>
-      </div>);
+      )
+    }
+    else {
+      return (
+        <div className="component-block" style={styles}>
+          <h3>{this.state.name} {this.state.id}</h3>
+          <div className="component-props">
+            <div>
+              <h4>Props:  </h4>
+              <Select
+                labelId="demo-simple-select-label"
+                id="demo-simple-select"
+                value={this.state.new_prop}
+                onChange={this.NewChanged.bind(this)}
+              >
+                {menu}
+              </Select>
+              {/* <Button onClick={this.Add.bind(this)} variant="text">Add</Button> */}
+            </div>
+            <div>
+              {active_props}
+            </div>
+          </div>
+          <div>
+            <h4>Content:</h4>
+            <Builder SendBuild={this.SubBuildSend.bind(this)} config={this.state.config} />
+          </div>
+        </div>);
+    }
   }
 };
 
@@ -240,18 +276,36 @@ class PropBlock extends React.Component<PropBlockProps> {
     this.SendUpdate(this.state.name, e.target.value);
   }
   render() {
-    return (
-      <div className="prop-block">
+    if (this.state.type == "ritch") {
+      return (
         <TextField
+          id="standard-multiline-static"
           onChange={this.Changed.bind(this)}
           value={this.state.val}
           size="small"
-          id="outlined-basic"
-          label={this.props.name}
-          placeholder={this.props.type}
-          variant="outlined" />
-      </div>
-    )
+
+          label={"Text"}
+          placeholder={"<p>Same text</p>"}
+          variant="outlined"
+          multiline
+          rows={4}
+
+        />)
+    }
+    else {
+      return (
+        <div className="prop-block">
+          <TextField
+            onChange={this.Changed.bind(this)}
+            value={this.state.val}
+            size="small"
+            id="outlined-basic"
+            label={this.props.name}
+            placeholder={this.props.type}
+            variant="outlined" />
+        </div>
+      )
+    }
   }
 }
 interface PropBlockProps {

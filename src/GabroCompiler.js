@@ -1,23 +1,28 @@
 function Compile(input, config) {
-  console.log(input);
+  //console.log(input);
   let result = "";
   for (let component of input) {
     result += ConvertToJsx(component, config);
     result += "\n";
   }
-  return WrapWithBase(result);
+  return WrapWithBase(result, config);
 }
 
 function ConvertToJsx(component, config) {
+  if (component.name == "Text") {
+    if (component.props[0] == undefined) return "";
+    if (component.props[0].val == undefined) return "";
+    return component.props[0].val;
+  }
   let syntax = CreateSyntax(component, config);
 
   if (component.children == null) {
     syntax = syntax.replace("{children}", "");
-  }
-  else {
+  } else {
     let result = "";
     for (let children of component.children) {
-      result += ConvertToJsx(ch, children);
+
+      result += ConvertToJsx(children, config);
       result += "\n";
     }
     syntax = syntax.replace("{children}", result);
@@ -42,23 +47,27 @@ function CreateSyntax(component, config) {
   }
   if (!has_children) {
     return "<" + component.name + "{atr} />"
-  }
-  else {
+  } else {
     return "<" + component.name + "{atr} >{children} </" + component.name + ">"
   }
 }
 
-function WrapWithBase(data) {
+function WrapWithBase(data, config) {
+  let imports = "";
+  for (let component of Object.keys(config.components)) {
+    if (component != "Text") {
+      imports += component + ",";
+    }
+  }
   return "import React from 'react'\n \
     import './App.scss';\n \
-    import {Section, Card \n \
-      //Here write components you want to use\n \
-      //e.g. Section, LandingPage, Full, Half\n \
-    } from '@janskvaril/gabro-framework'\n \
+    import {" +
+    imports +
+    "} from '@janskvaril/gabro-framework'\n \
     function App() {\n \
       return (\n \
-        <div>\n "
-    + data +
+        <div>\n " +
+    data +
     " </div> \n \
       );\n \
     }\n \

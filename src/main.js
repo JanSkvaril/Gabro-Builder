@@ -1,4 +1,8 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const {
+  app,
+  BrowserWindow,
+  ipcMain
+} = require('electron');
 const path = require('path');
 const fs = require('fs');
 // Handle creating/removing shortcuts on Windows when installing/uninstalling.
@@ -28,7 +32,7 @@ const createWindow = () => {
 
   ipcMain.on("send-build", (e, input) => {
     fs.writeFile("../gabro_template/src/App.jsx", Compile(input, CONFIG), (e) => {
-      console.log(e);
+      //console.log(e);
     });
   });
 
