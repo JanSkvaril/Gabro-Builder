@@ -30,6 +30,7 @@ function ConvertToJsx(component, config) {
 
   let props = "";
   for (let prop of component.props) {
+    if (prop.val == "") continue;
     let name = prop.name.replace("?", "")
     props += " " + name + '="' + prop.val + '" ';
   }
