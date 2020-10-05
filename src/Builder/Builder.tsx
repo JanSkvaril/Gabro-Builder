@@ -83,6 +83,45 @@ class Builder extends React.Component<BuildProps> {
       build: new_build
     });
   }
+  HandleMove(id: number, dir: "up" | "down") {
+    let new_build: any = [];
+    if (dir == "down") {
+
+      for (let i = 0; i < this.state.build.length; i++) {
+        if (this.state.build[i].id == id) {
+          if (i + 1 == this.state.build.length) return;
+
+          new_build.push(this.state.build[i + 1]);
+          new_build.push(this.state.build[i]);
+          i++;
+        }
+        else {
+          new_build.push(this.state.build[i]);
+        }
+      }
+    }
+    else {
+
+      for (let i = 0; i < this.state.build.length; i++) {
+
+        if (this.state.build[i].id == id) {
+          if (i == 0) return;
+          new_build.pop();
+          new_build.push(this.state.build[i]);
+          new_build.push(this.state.build[i - 1]);
+
+          i++;
+        }
+        else {
+          new_build.push(this.state.build[i]);
+        }
+      }
+    }
+    this.SendBuild(new_build);
+    this.setState({
+      build: new_build
+    });
+  }
   render() {
     //console.log(this.state.config)
     if (this.state.config == null) return <div>error</div>;
@@ -108,6 +147,7 @@ class Builder extends React.Component<BuildProps> {
           config={this.state.config}
           SubBuildUpdate={this.RecieveBuild.bind(this)}
           OnDelete={this.ComponentDeleted.bind(this)}
+          OnMove={this.HandleMove.bind(this)}
         />)
       i++;
     }

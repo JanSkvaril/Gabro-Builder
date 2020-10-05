@@ -11,7 +11,7 @@ class ComponentBlock extends React.Component<BlockProps> {
     Update: (id: number, val: any) => void;
     SubBuildUpdate: (id: number, build: any) => void;
     OnDelete: (id: number) => void;
-
+    OnMove: (id: number, dir: "up" | "down") => void;
     constructor(props: BlockProps) {
         super(props);
         this.state = {
@@ -30,7 +30,7 @@ class ComponentBlock extends React.Component<BlockProps> {
         this.Update = this.props.OnChange;
         this.SubBuildUpdate = props.SubBuildUpdate;
         this.OnDelete = this.props.OnDelete;
-
+        this.OnMove = this.props.OnMove;
     }
     componentDidMount() {
         if (this.state.name == "Text") {
@@ -72,6 +72,12 @@ class ComponentBlock extends React.Component<BlockProps> {
     Delete() {
         this.OnDelete(this.state.id);
     }
+    MoveDown() {
+        this.OnMove(this.state.id, "down");
+    }
+    MoveUp() {
+        this.OnMove(this.state.id, "up");
+    }
     render() {
         let menu: any = [];
         menu.push(<MenuItem key={-1} value={-1}>{<i>Select new prop</i>}</MenuItem>);
@@ -110,6 +116,8 @@ class ComponentBlock extends React.Component<BlockProps> {
                 <div key={this.state.id} className="component-block" style={styles}>
                     <h3>{this.state.name} {this.state.id}</h3>
                     <Button onClick={this.Delete.bind(this)}>Delete</Button>
+                    <Button onClick={this.MoveDown.bind(this)}>DOWN</Button>
+                    <Button onClick={this.MoveUp.bind(this)}>UP</Button>
                     <div className="component-props">
                         <div>
                             <h4>Props:  </h4>
@@ -151,6 +159,7 @@ interface BlockProps {
     OnChange: (id: number, val: any) => void,
     SubBuildUpdate: (id: number, build: any) => void,
     OnDelete: (id: number) => void,
+    OnMove: (id: number, dir: "up" | "down") => void,
     config: any
 }
 
