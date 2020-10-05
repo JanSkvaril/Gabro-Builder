@@ -4,6 +4,10 @@
     height: 100%;
 }
 
+.main-builder {
+    margin: 10px;
+}
+
 .component-block {
     width: 80%;
     min-width: 400px;
