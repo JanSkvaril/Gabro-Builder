@@ -34,7 +34,6 @@ class ComponentBlock extends React.Component<BlockProps> {
     }
     componentDidMount() {
         if (this.state.name == "Text") {
-            console.log("stalo se")
             this.Add(0);
         }
     }
@@ -48,18 +47,22 @@ class ComponentBlock extends React.Component<BlockProps> {
 
     }
     Add(prop_index) {
-        this.state.pos_props[prop_index].used = true;
-        let new_prop = this.state.pos_props[prop_index];
+        ;
+        let new_prop = JSON.parse(JSON.stringify(this.state.pos_props[prop_index]));
         let new_active_props = [...this.state.active_props];
         new_active_props.push(new_prop);
-        this.setState({ active_props: new_active_props });
+        this.setState(
+            {
+                active_props: new_active_props,
+                pos_props: [...this.state.pos_props][prop_index].used = true
+            });
     }
     PropChanged(name: string, val: string) {
         let new_active_props = [...this.state.active_props];
         for (let i = 0; i < new_active_props.length; i++) {
             if (new_active_props[i].name == name) {
                 new_active_props[i].val = val;
-                console.log(name + val);
+                // console.log(name + val);
                 // this.setState({ active_props: new_active_props });
                 this.Update(this.state.id, new_active_props);
                 break;
@@ -79,6 +82,7 @@ class ComponentBlock extends React.Component<BlockProps> {
         this.OnMove(this.state.id, "up");
     }
     render() {
+        console.log(this.state.active_props);
         let menu: any = [];
         menu.push(<MenuItem key={-1} value={-1}>{<i>Select new prop</i>}</MenuItem>);
         let i = 0;
@@ -97,6 +101,7 @@ class ComponentBlock extends React.Component<BlockProps> {
         i = 0;
         for (let prop of this.state.active_props) {
             active_props.push(<PropBlock key={i} name={prop.name} type={prop.type} value={prop.val} onChange={this.PropChanged.bind(this)} />)
+            i++;
         }
         if (this.state.name == "Text") {
             return (
@@ -112,6 +117,7 @@ class ComponentBlock extends React.Component<BlockProps> {
             )
         }
         else {
+
             return (
                 <div key={this.state.id} className="component-block" style={styles}>
                     <h3>{this.state.name} {this.state.id}</h3>
