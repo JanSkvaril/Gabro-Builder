@@ -1,15 +1,17 @@
 import React from "react";
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import { Button, TextField } from '@material-ui/core';
 import Builder from "./Builder";
 import PropBlock from "./PropBlock";
 import "./Builder.css";
+import { Button } from "@material-ui/core";
 
 class ComponentBlock extends React.Component<BlockProps> {
     state: any;
     Update: (id: number, val: any) => void;
     SubBuildUpdate: (id: number, build: any) => void;
+    OnDelete: (id: number) => void;
+
     constructor(props: BlockProps) {
         super(props);
         this.state = {
@@ -27,6 +29,7 @@ class ComponentBlock extends React.Component<BlockProps> {
         }
         this.Update = this.props.OnChange;
         this.SubBuildUpdate = props.SubBuildUpdate;
+        this.OnDelete = this.props.OnDelete;
 
     }
     componentDidMount() {
@@ -66,13 +69,16 @@ class ComponentBlock extends React.Component<BlockProps> {
     SubBuildSend(build) {
         this.SubBuildUpdate(this.state.id, build);
     }
+    Delete() {
+        this.OnDelete(this.state.id);
+    }
     render() {
         let menu: any = [];
-        menu.push(<MenuItem value={-1}>{<i>Select new prop</i>}</MenuItem>);
+        menu.push(<MenuItem key={-1} value={-1}>{<i>Select new prop</i>}</MenuItem>);
         let i = 0;
         for (let prop of this.state.pos_props) {
             if (prop.name != "children?" && prop.used == false) {
-                menu.push(<MenuItem value={i}>{prop.name}</MenuItem>)
+                menu.push(<MenuItem key={i} value={i}>{prop.name}</MenuItem>)
             }
             i++;
         }
@@ -82,8 +88,9 @@ class ComponentBlock extends React.Component<BlockProps> {
             background: this.state.color
         }
         let active_props: any = [];
+        i = 0;
         for (let prop of this.state.active_props) {
-            active_props.push(<PropBlock name={prop.name} type={prop.type} value={prop.val} onChange={this.PropChanged.bind(this)} />)
+            active_props.push(<PropBlock key={i} name={prop.name} type={prop.type} value={prop.val} onChange={this.PropChanged.bind(this)} />)
         }
         if (this.state.name == "Text") {
             return (
@@ -100,8 +107,9 @@ class ComponentBlock extends React.Component<BlockProps> {
         }
         else {
             return (
-                <div className="component-block" style={styles}>
+                <div key={this.state.id} className="component-block" style={styles}>
                     <h3>{this.state.name} {this.state.id}</h3>
+                    <Button onClick={this.Delete.bind(this)}>Delete</Button>
                     <div className="component-props">
                         <div>
                             <h4>Props:  </h4>
@@ -141,7 +149,8 @@ interface BlockProps {
         val: string
     }[],
     OnChange: (id: number, val: any) => void,
-    SubBuildUpdate: (id: number, build: any) => void;
+    SubBuildUpdate: (id: number, build: any) => void,
+    OnDelete: (id: number) => void,
     config: any
 }
 

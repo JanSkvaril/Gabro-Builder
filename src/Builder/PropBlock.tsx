@@ -1,7 +1,5 @@
 import React from "react";
-import MenuItem from '@material-ui/core/MenuItem';
-import Select from '@material-ui/core/Select';
-import { Button, TextField } from '@material-ui/core';
+import { TextField } from '@material-ui/core';
 
 
 class PropBlock extends React.Component<PropBlockProps> {

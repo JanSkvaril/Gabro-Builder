@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
-import { Button, TextField } from '@material-ui/core';
+import { Button } from '@material-ui/core';
 import { ReactNode } from 'react';
 import ComponentBlock from './ComponentBlock';
 
@@ -21,7 +21,6 @@ class Builder extends React.Component<BuildProps> {
     this.SendBuild = props.SendBuild;
   }
   Add() {
-    console.log("Sending build");
 
     let selected = Object.keys(this.state.config.components)[this.state.new_component];
     let id = this.state.build.length == 0 ? 0 : this.state.build[this.state.build.length - 1].id + 1;
@@ -68,22 +67,39 @@ class Builder extends React.Component<BuildProps> {
     }
 
   }
+  ComponentDeleted(id) {
+    if (!confirm("Are you sure you want do delete this component?")) {
+      return;
+    }
+    let new_build: any = [];
+    for (let i = 0; i < this.state.build.length; i++) {
+      if (this.state.build[i].id != id) {
+        new_build.push(this.state.build[i]);
+      }
+    }
+
+    this.SendBuild(new_build);
+    this.setState({
+      build: new_build
+    });
+  }
   render() {
-    console.log(this.state.config)
+    //console.log(this.state.config)
     if (this.state.config == null) return <div>error</div>;
     let component_names = Object.keys(this.state.config.components);
     let menu: ReactNode[] = [];
     let i = 0;
     for (let name of component_names) {
-      menu.push(<MenuItem value={i}>{name}</MenuItem>);
+      menu.push(<MenuItem key={i} value={i}>{name}</MenuItem>);
       i++;
     }
     let active_components: ReactNode[] = [];
-    console.log(this.state.build)
+    i = 0;
     for (let component of this.state.build) {
       let posible_props = this.state.config.components[component.name].props;
       active_components.push(
         <ComponentBlock
+          key={component.id}
           name={component.name}
           id={component.id}
           pos_props={posible_props}
@@ -91,7 +107,9 @@ class Builder extends React.Component<BuildProps> {
           OnChange={this.PropsChanged.bind(this)}
           config={this.state.config}
           SubBuildUpdate={this.RecieveBuild.bind(this)}
+          OnDelete={this.ComponentDeleted.bind(this)}
         />)
+      i++;
     }
     return (
       <div className="builder">
