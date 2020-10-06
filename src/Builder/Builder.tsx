@@ -157,6 +157,7 @@ class Builder extends React.Component<BuildProps> {
           SubBuildUpdate={this.RecieveBuild.bind(this)}
           OnDelete={this.ComponentDeleted.bind(this)}
           OnMove={this.HandleMove.bind(this)}
+          PreviousBuild={component.children}
         />)
       i++;
     }

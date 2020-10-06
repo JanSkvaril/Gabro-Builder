@@ -47,9 +47,9 @@ const createWindow = () => {
   });
 
   ipcMain.on("set-path", (e, input) => {
-    let path_to_build = input;
-    // setPath(input);
-    project_path = path_to_build;
+    if (input != "") {
+      project_path = input;
+    }
 
     let raw = fs.readFileSync(project_path + "/" + BUILD_FILE_NAME);
     let build = JSON.parse(raw);
@@ -68,9 +68,7 @@ function SaveAndCompile(build) {
   });
 }
 
-function setPath(path_to_build) {
 
-}
 
 
 // This method will be called when Electron has finished

@@ -12,6 +12,7 @@ class ComponentBlock extends React.Component<BlockProps> {
     SubBuildUpdate: (id: number, build: any) => void;
     OnDelete: (id: number) => void;
     OnMove: (id: number, dir: "up" | "down") => void;
+    SetChildBuild: any;
     constructor(props: BlockProps) {
         super(props);
         this.state = {
@@ -23,6 +24,7 @@ class ComponentBlock extends React.Component<BlockProps> {
             config: props.config,
             color: "rgb(" + (Math.random() * 100 + 150) + "," + (Math.random() * 100 + 150) + "," + (Math.random() * 100 + 150) + ")"
         }
+
         for (let i = 0; i < this.state.pos_props.length; i++) {
             this.state.pos_props[i].used = false;
 
@@ -33,9 +35,13 @@ class ComponentBlock extends React.Component<BlockProps> {
         this.OnMove = this.props.OnMove;
     }
     componentDidMount() {
-        if (this.state.name == "Text") {
+        if (this.state.name == "Text" && this.state.active_props.length == 0) {
             this.Add(0);
         }
+        if (this.props.PreviousBuild != undefined) {
+            this.SetChildBuild(this.props.PreviousBuild);
+        }
+
     }
     NewChanged(e) {
         let anyUnusedPropIndex = -1;
@@ -143,7 +149,7 @@ class ComponentBlock extends React.Component<BlockProps> {
                     </div>
                     <div>
                         <h4>Content:</h4>
-                        <Builder SendBuild={this.SubBuildSend.bind(this)} config={this.state.config} />
+                        <Builder onRef={ref => (this.SetChildBuild = ref)} SendBuild={this.SubBuildSend.bind(this)} config={this.state.config} />
                     </div>
                 </div>);
         }
@@ -166,7 +172,8 @@ interface BlockProps {
     SubBuildUpdate: (id: number, build: any) => void,
     OnDelete: (id: number) => void,
     OnMove: (id: number, dir: "up" | "down") => void,
-    config: any
+    config: any,
+    PreviousBuild?: any
 }
 
 export default ComponentBlock;

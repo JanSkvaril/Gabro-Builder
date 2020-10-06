@@ -24,6 +24,9 @@ class BuilderWindow extends React.Component {
         });
         ipcRenderer.send("get-config");
     }
+    componentDidMount() {
+        ipcRenderer.send("set-path", "");
+    }
     SendToCompile(build) {
         ipcRenderer.send("send-build", build);
     }
