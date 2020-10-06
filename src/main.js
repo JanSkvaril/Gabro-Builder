@@ -10,8 +10,14 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
   app.quit();
 }
 
+let project_path = "../gabro_template";
+
+
 const Compile = require("./GabroCompiler").Compile;
 let CONFIG;
+
+const BUILD_FILE_NAME = "Gabro-Build.json";
+
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
@@ -19,6 +25,7 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
+      enableRemoteModule: true
     }
   });
 
@@ -31,17 +38,39 @@ const createWindow = () => {
   CONFIG = JSON.parse(rawdata);
 
   ipcMain.on("send-build", (e, input) => {
-    fs.writeFile("../gabro_template/src/App.jsx", Compile(input, CONFIG), (e) => {
-      //console.log(e);
-    });
+    SaveAndCompile(input);
   });
 
   ipcMain.on("get-config", (e) => {
 
     e.reply("receive_config", CONFIG);
   });
+
+  ipcMain.on("set-path", (e, input) => {
+    let path_to_build = input;
+    // setPath(input);
+    project_path = path_to_build;
+
+    let raw = fs.readFileSync(project_path + "/" + BUILD_FILE_NAME);
+    let build = JSON.parse(raw);
+    SaveAndCompile(build);
+    e.reply("build_update", build);
+  });
 };
 
+function SaveAndCompile(build) {
+
+  fs.writeFile(project_path + "/" + BUILD_FILE_NAME, JSON.stringify(build), (e) => {
+
+  });
+  fs.writeFile(project_path + "/src/App.jsx", Compile(build, CONFIG), (e) => {
+    //console.log(e);
+  });
+}
+
+function setPath(path_to_build) {
+
+}
 
 
 // This method will be called when Electron has finished
@@ -68,21 +97,3 @@ app.on('activate', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and import them here.
-
-
-function compileTest() {
-  return "import React from 'react'\n \
-  import './App.scss';\n \
-  import {\n \
-    //Here write components you want to use\n \
-    //e.g. Section, LandingPage, Full, Half\n \
-  } from '@janskvaril/gabro-framework'\n \
-  function App() {\n \
-    return (\n \
-      <div>\n \
-         test \n \
-     </div> \n \
-    );\n \
-  }\n \
-  export default App;"
-}

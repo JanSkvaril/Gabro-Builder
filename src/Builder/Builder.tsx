@@ -20,6 +20,15 @@ class Builder extends React.Component<BuildProps> {
     }
     this.SendBuild = props.SendBuild;
   }
+  componentDidMount() {
+    if (this.props.onRef != undefined)
+      this.props.onRef(this.SetBuild.bind(this))
+  }
+  SetBuild(new_build) {
+    this.setState({
+      build: new_build
+    });
+  }
   Add() {
 
     let selected = Object.keys(this.state.config.components)[this.state.new_component];
@@ -177,7 +186,8 @@ class Builder extends React.Component<BuildProps> {
 
 interface BuildProps {
   config: any,
-  SendBuild: (build: any) => void
+  SendBuild: (build: any) => void,
+  onRef?: any,
 }
 
 

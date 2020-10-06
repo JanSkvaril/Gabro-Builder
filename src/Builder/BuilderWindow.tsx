@@ -4,6 +4,7 @@ import Builder from "./Builder";
 
 class BuilderWindow extends React.Component {
     state: any;
+    SetChildBuild: any;
     constructor(props: any) {
 
         super(props);
@@ -16,6 +17,11 @@ class BuilderWindow extends React.Component {
             this.setState({ config: data })
 
         });
+        ipcRenderer.on('build_update', (event, data) => {
+            //this.child.SetBuild(data);
+            this.SetChildBuild(data);
+
+        });
         ipcRenderer.send("get-config");
     }
     SendToCompile(build) {
@@ -26,7 +32,7 @@ class BuilderWindow extends React.Component {
             return <div></div>
         }
         return (<div className="main-builder">
-            <Builder config={this.state.config} SendBuild={this.SendToCompile.bind(this)} />
+            <Builder onRef={ref => (this.SetChildBuild = ref)} config={this.state.config} SendBuild={this.SendToCompile.bind(this)} />
         </div>)
     }
 
