@@ -77,9 +77,9 @@ class Builder extends React.Component<BuildProps> {
 
   }
   ComponentDeleted(id) {
-    if (!confirm("Are you sure you want do delete this component?")) {
-      return;
-    }
+    // if (!confirm("Are you sure you want do delete this component?")) {
+    //   return;
+    // }
     let new_build: any = [];
     for (let i = 0; i < this.state.build.length; i++) {
       if (this.state.build[i].id != id) {

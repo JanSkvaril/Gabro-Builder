@@ -21,7 +21,7 @@ class PropBlock extends React.Component<PropBlockProps> {
         if (this.state.type == "ritch") {
             return (
                 <TextField
-                    id="standard-multiline-static"
+
                     onChange={this.Changed.bind(this)}
                     value={this.state.val}
                     size="small"
@@ -42,7 +42,7 @@ class PropBlock extends React.Component<PropBlockProps> {
                         onChange={this.Changed.bind(this)}
                         value={this.state.val}
                         size="small"
-                        id="outlined-basic"
+
                         label={this.props.name}
                         placeholder={this.props.type}
                         variant="outlined" />

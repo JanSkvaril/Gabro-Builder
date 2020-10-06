@@ -53,14 +53,17 @@ class ComponentBlock extends React.Component<BlockProps> {
 
     }
     Add(prop_index) {
-        ;
+        let new_posible_props = [...this.state.pos_props];
+        new_posible_props[prop_index].used = true;
         let new_prop = JSON.parse(JSON.stringify(this.state.pos_props[prop_index]));
         let new_active_props = [...this.state.active_props];
         new_active_props.push(new_prop);
         this.setState(
             {
                 active_props: new_active_props,
-                pos_props: [...this.state.pos_props][prop_index].used = true
+                //    pos_props: new_posible_props
+            }, () => {
+                // this.render();
             });
     }
     PropChanged(name: string, val: string) {
@@ -88,11 +91,14 @@ class ComponentBlock extends React.Component<BlockProps> {
         this.OnMove(this.state.id, "up");
     }
     render() {
-        console.log(this.state.active_props);
+        //console.log(this.state.active_props);
+        //console.log(this.state.pos_props);
         let menu: any = [];
         menu.push(<MenuItem key={-1} value={-1}>{<i>Select new prop</i>}</MenuItem>);
         let i = 0;
+        console.log(this.state.pos_props.length);
         for (let prop of this.state.pos_props) {
+
             if (prop.name != "children?" && prop.used == false) {
                 menu.push(<MenuItem key={i} value={i}>{prop.name}</MenuItem>)
             }

@@ -49,7 +49,9 @@ const createWindow = () => {
   });
 
   ipcMain.on("set-path", (e, input) => {
+    return;
     if (input != "") {
+
       project_path = input;
     }
 

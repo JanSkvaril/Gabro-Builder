@@ -18,7 +18,7 @@ function Menu(props) {
 
     return (
         <div>
-            <Drawer variant="permanent" anchor={"bottom"} open={true} >
+            <Drawer variant="permanent" anchor={"right"} open={true} >
                 <Button onClick={Open} variant="outlined">Open</Button>
             </Drawer>
         </div>)
