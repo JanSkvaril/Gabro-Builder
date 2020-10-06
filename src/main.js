@@ -11,7 +11,9 @@ if (require('electron-squirrel-startup')) { // eslint-disable-line global-requir
 }
 
 let project_path = "../gabro_template";
-
+const {
+  exec
+} = require('child_process')
 
 const Compile = require("./GabroCompiler").Compile;
 let CONFIG;
@@ -55,6 +57,14 @@ const createWindow = () => {
     let build = JSON.parse(raw);
     SaveAndCompile(build);
     e.reply("build_update", build);
+
+    //console.log("Executing: " + "cd " + project_path + " ; npm start")
+    exec("npm start", {
+      cwd: project_path
+    }, (error, stdout) => {
+      // console.log("ERROR: " + error);
+      // console.log("stdout: " + stdout);
+    });
   });
 };
 
