@@ -145,6 +145,7 @@ class Builder extends React.Component<BuildProps> {
     i = 0;
     for (let component of this.state.build) {
       let posible_props = [...this.state.config.components[component.name].props];
+      // console.log(component.props);
       active_components.push(
         <ComponentBlock
           key={component.id}

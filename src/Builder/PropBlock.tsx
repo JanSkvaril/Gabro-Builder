@@ -16,6 +16,9 @@ class PropBlock extends React.Component<PropBlockProps> {
     }
     Changed(e) {
         this.SendUpdate(this.state.name, e.target.value);
+        this.setState({
+            val: e.target.value
+        })
     }
     render() {
         if (this.state.type == "ritch") {

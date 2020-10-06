@@ -27,7 +27,14 @@ class ComponentBlock extends React.Component<BlockProps> {
 
         for (let i = 0; i < this.state.pos_props.length; i++) {
             this.state.pos_props[i].used = false;
+        }
+        for (let i = 0; i < this.state.active_props.length; i++) {
+            for (let j = 0; j < this.state.pos_props.length; j++) {
+                if (this.state.active_props[i].name == this.state.pos_props[j].name) {
+                    this.state.pos_props[j].used = true;
+                }
 
+            }
         }
         this.Update = this.props.OnChange;
         this.SubBuildUpdate = props.SubBuildUpdate;
@@ -96,7 +103,7 @@ class ComponentBlock extends React.Component<BlockProps> {
         let menu: any = [];
         menu.push(<MenuItem key={-1} value={-1}>{<i>Select new prop</i>}</MenuItem>);
         let i = 0;
-        console.log(this.state.pos_props.length);
+
         for (let prop of this.state.pos_props) {
 
             if (prop.name != "children?" && prop.used == false) {
@@ -111,7 +118,10 @@ class ComponentBlock extends React.Component<BlockProps> {
         }
         let active_props: any = [];
         i = 0;
+        // console.log(this.state.active_props);
+        //  console.log(this.state.pos_props);
         for (let prop of this.state.active_props) {
+
             active_props.push(<PropBlock key={i} name={prop.name} type={prop.type} value={prop.val} onChange={this.PropChanged.bind(this)} />)
             i++;
         }

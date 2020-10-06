@@ -49,7 +49,7 @@ const createWindow = () => {
   });
 
   ipcMain.on("set-path", (e, input) => {
-    return;
+
     if (input != "") {
 
       project_path = input;
@@ -59,7 +59,7 @@ const createWindow = () => {
     let build = JSON.parse(raw);
     SaveAndCompile(build);
     e.reply("build_update", build);
-
+    return;
     //console.log("Executing: " + "cd " + project_path + " ; npm start")
     exec("npm start", {
       cwd: project_path
