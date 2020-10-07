@@ -14,12 +14,21 @@ function Open() {
 
 }
 
+function Create() {
+    dialog.showOpenDialog({
+        properties: ['openDirectory']
+    }).then((result) => {
+        ipcRenderer.send("create", result.filePaths[0]);
+    });
+}
+
 function Menu(props) {
 
     return (
         <div>
             <Drawer variant="permanent" anchor={"right"} open={true} >
                 <Button onClick={Open} variant="outlined">Open</Button>
+                <Button onClick={Create} variant="outlined">Create</Button>
             </Drawer>
         </div>)
 }

@@ -68,15 +68,19 @@ const createWindow = () => {
       // console.log("stdout: " + stdout);
     });
   });
+
+  ipcMain.on("create", (e, input) => {
+    //TODO: add git clone 
+  });
 };
 
 function SaveAndCompile(build) {
-
+  //TODO add error messages
   fs.writeFile(project_path + "/" + BUILD_FILE_NAME, JSON.stringify(build), (e) => {
 
   });
   fs.writeFile(project_path + "/src/App.jsx", Compile(build, CONFIG), (e) => {
-    //console.log(e);
+
   });
 }
 
