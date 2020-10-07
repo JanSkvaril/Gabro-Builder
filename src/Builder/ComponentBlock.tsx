@@ -25,17 +25,17 @@ class ComponentBlock extends React.Component<BlockProps> {
             color: "rgb(" + (Math.random() * 100 + 150) + "," + (Math.random() * 100 + 150) + "," + (Math.random() * 100 + 150) + ")"
         }
 
-        for (let i = 0; i < this.state.pos_props.length; i++) {
-            this.state.pos_props[i].used = false;
-        }
-        for (let i = 0; i < this.state.active_props.length; i++) {
-            for (let j = 0; j < this.state.pos_props.length; j++) {
-                if (this.state.active_props[i].name == this.state.pos_props[j].name) {
-                    this.state.pos_props[j].used = true;
-                }
+        // for (let i = 0; i < this.state.pos_props.length; i++) {
+        //     this.state.pos_props[i].used = false;
+        // }
+        // for (let i = 0; i < this.state.active_props.length; i++) {
+        //     for (let j = 0; j < this.state.pos_props.length; j++) {
+        //         if (this.state.active_props[i].name == this.state.pos_props[j].name) {
+        //             this.state.pos_props[j].used = true;
+        //         }
 
-            }
-        }
+        //     }
+        // }
         this.Update = this.props.OnChange;
         this.SubBuildUpdate = props.SubBuildUpdate;
         this.OnDelete = this.props.OnDelete;
@@ -50,6 +50,12 @@ class ComponentBlock extends React.Component<BlockProps> {
         }
 
     }
+    PropUsed(prop_name) {
+        for (let active_prop of this.state.active_props) {
+            if (active_prop.name == prop_name) return true;
+        }
+        return false;
+    }
     NewChanged(e) {
         let anyUnusedPropIndex = -1;
 
@@ -60,8 +66,6 @@ class ComponentBlock extends React.Component<BlockProps> {
 
     }
     Add(prop_index) {
-        let new_posible_props = [...this.state.pos_props];
-        new_posible_props[prop_index].used = true;
         let new_prop = JSON.parse(JSON.stringify(this.state.pos_props[prop_index]));
         let new_active_props = [...this.state.active_props];
         new_active_props.push(new_prop);
@@ -106,7 +110,7 @@ class ComponentBlock extends React.Component<BlockProps> {
 
         for (let prop of this.state.pos_props) {
 
-            if (prop.name != "children?" && prop.used == false) {
+            if (prop.name != "children?" && this.PropUsed(prop.name) == false) {
                 menu.push(<MenuItem key={i} value={i}>{prop.name}</MenuItem>)
             }
             i++;
@@ -129,6 +133,10 @@ class ComponentBlock extends React.Component<BlockProps> {
             return (
                 <div>
                     <div className="component-block" style={styles}>
+                        <h3>{this.state.name} {this.state.id}</h3>
+                        <Button onClick={this.Delete.bind(this)}>Delete</Button>
+                        <Button onClick={this.MoveDown.bind(this)}>DOWN</Button>
+                        <Button onClick={this.MoveUp.bind(this)}>UP</Button>
                         <div className="component-props">
                             <div>
                                 {active_props}

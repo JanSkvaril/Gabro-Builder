@@ -17,6 +17,7 @@ class Builder extends React.Component<BuildProps> {
       new_component: 0,
       config: props.config,
       build: [],
+      id: 0
     }
     this.SendBuild = props.SendBuild;
   }
@@ -32,7 +33,7 @@ class Builder extends React.Component<BuildProps> {
   Add() {
 
     let selected = Object.keys(this.state.config.components)[this.state.new_component];
-    let id = this.state.build.length == 0 ? 0 : this.state.build[this.state.build.length - 1].id + 1;
+    let id = this.state.id;
 
     let new_build = [...this.state.build];
     new_build.push({
@@ -43,7 +44,8 @@ class Builder extends React.Component<BuildProps> {
     });
     this.SendBuild(new_build);
     this.setState({
-      build: new_build
+      build: new_build,
+      id: this.state.id + 1
     });
   }
   NewChanged(e) {
@@ -118,8 +120,6 @@ class Builder extends React.Component<BuildProps> {
           new_build.pop();
           new_build.push(this.state.build[i]);
           new_build.push(this.state.build[i - 1]);
-
-          i++;
         }
         else {
           new_build.push(this.state.build[i]);

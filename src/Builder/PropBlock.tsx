@@ -10,9 +10,20 @@ class PropBlock extends React.Component<PropBlockProps> {
         this.state = {
             name: this.props.name,
             type: this.props.type,
-            val: this.props.value,
+            val: this.props.value || "",
         }
+        // if (this.state.val == "") {
+
+        //     this.state.val = this.props.value;
+        // }
+        // 
         this.SendUpdate = this.props.onChange;
+    }
+    componentDidMount() {
+        // this.setState({
+        //     val: this.props.value
+        // })
+
     }
     Changed(e) {
         this.SendUpdate(this.state.name, e.target.value);
