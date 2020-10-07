@@ -26,8 +26,15 @@ class Builder extends React.Component<BuildProps> {
       this.props.onRef(this.SetBuild.bind(this))
   }
   SetBuild(new_build) {
+    let highest_id = -100;
+    for (let comp of new_build) {
+      if (comp.id > highest_id) {
+        highest_id = comp.id;
+      }
+    }
     this.setState({
-      build: new_build
+      build: new_build,
+      id: highest_id + 1
     });
   }
   Add() {
