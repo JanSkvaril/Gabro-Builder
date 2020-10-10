@@ -1,5 +1,5 @@
 import React from "react";
-import { TextField } from '@material-ui/core';
+import { Checkbox, FormControlLabel, TextField } from '@material-ui/core';
 
 
 class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
@@ -20,17 +20,23 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
         this.SendUpdate = this.props.onChange;
     }
     componentDidMount() {
-        // this.setState({
-        //     val: this.props.value
-        // })
+        // if (this.state.type == "boolean" && this.state.val == "") {
+        //     this.setState({
+        //         val: "true"
+        //     })
+        // }
 
     }
     Changed(e) {
+        let val: string = e.target.value;
+        if (this.state.type == "boolean") {
+            val = e.target.checked;
+        }
 
         this.setState({
-            val: e.target.value
+            val: val
         })
-        this.SendUpdate(this.state.name, e.target.value);
+        this.SendUpdate(this.state.name, val);
     }
     render() {
         if (this.state.type == "ritch") {
@@ -49,6 +55,18 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
                     rows={4}
 
                 />)
+        }
+        else if (this.state.type == "boolean") {
+            return (
+                <div className="prop-block">
+                    <FormControlLabel
+                        control={
+                            <Checkbox onChange={this.Changed.bind(this)} checked={Boolean(this.state.val)} color="default" name="checkedA" />
+                        }
+                        label={this.state.name}
+                    />
+                </div>
+            )
         }
         else {
             return (
