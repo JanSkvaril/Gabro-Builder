@@ -39,6 +39,9 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
         if (this.state.name == "Text" && this.state.active_props.length == 0) {
             this.Add(0);
         }
+        else if (this.state.active_props.length == 0) {
+            this.AddRequired();
+        }
         if (this.props.PreviousBuild != undefined) {
             this.SetChildBuild(this.props.PreviousBuild);
         }
@@ -58,6 +61,23 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
 
         })
 
+    }
+    AddRequired() {
+        let new_active_props = [...this.state.active_props];
+        for (let i = 0; i < this.state.pos_props.length; i++) {
+            if (this.state.pos_props[i].name[this.state.pos_props[i].name.length - 1] != "?") {
+                let new_prop = JSON.parse(JSON.stringify(this.state.pos_props[i]));
+                new_active_props.push(new_prop);
+            }
+
+        }
+        this.setState(
+            {
+                active_props: new_active_props,
+                //    pos_props: new_posible_props
+            }, () => {
+                // this.render();
+            });
     }
     Add(prop_index) {
         let new_prop = JSON.parse(JSON.stringify(this.state.pos_props[prop_index]));
