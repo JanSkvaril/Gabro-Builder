@@ -35,7 +35,7 @@ class BuilderWindow extends React.Component {
             return <div></div>
         }
         return (<div className="main-builder">
-            <Builder onRef={ref => (this.SetChildBuild = ref)} config={this.state.config} SendBuild={this.SendToCompile.bind(this)} />
+            <Builder ParrentName="root" onRef={ref => (this.SetChildBuild = ref)} config={this.state.config} SendBuild={this.SendToCompile.bind(this)} />
         </div>)
     }
 

@@ -17,7 +17,8 @@ class Builder extends React.Component<BuildProps, BuildState> {
       new_component: 0,
       config: props.config,
       build: [],
-      id: 0
+      id: 0,
+      parrent_component_name: this.props.ParrentName,
     }
     this.SendBuild = props.SendBuild;
   }
@@ -37,9 +38,9 @@ class Builder extends React.Component<BuildProps, BuildState> {
       id: highest_id + 1
     });
   }
-  Add() {
+  Add(index) {
 
-    let selected = Object.keys(this.state.config.components)[this.state.new_component];
+    let selected = Object.keys(this.state.config.components)[index];
     let id = this.state.id;
 
     let new_build = [...this.state.build];
@@ -56,7 +57,7 @@ class Builder extends React.Component<BuildProps, BuildState> {
     });
   }
   NewChanged(e) {
-    this.setState({ new_component: e.target.value })
+    this.Add(e.target.value);
   }
   PropsChanged(id, val) {
     let new_build = [...this.state.build];
@@ -184,11 +185,21 @@ class Builder extends React.Component<BuildProps, BuildState> {
     if (this.state.config == null) return <div>error</div>;
     let component_names = Object.keys(this.state.config.components);
     let menu: ReactNode[] = [];
+    let canChangeTo: ReactNode[] = [];
     let i = 0;
+    menu.push(<MenuItem key={-1} value={-1}>{<i>Add component</i>}</MenuItem>);
     for (let name of component_names) {
-      menu.push(<MenuItem key={i} value={i}>{name}</MenuItem>);
+      for (let allowed_child of this.state.config.components[name].can_be_in) {
+        if (allowed_child == this.state.parrent_component_name) {
+          menu.push(<MenuItem key={i} value={i}>{name}</MenuItem>);
+          canChangeTo.push(name);
+          break;
+        }
+      }
+
       i++;
     }
+
     let active_components: ReactNode[] = [];
     i = 0;
     for (let component of this.state.build) {
@@ -196,6 +207,7 @@ class Builder extends React.Component<BuildProps, BuildState> {
       // console.log(component.props);
       active_components.push(
         <ComponentBlock
+          canChangeTo={[...canChangeTo]}
           key={component.id}
           name={component.name}
           id={component.id}
@@ -221,13 +233,13 @@ class Builder extends React.Component<BuildProps, BuildState> {
 
 
           <Select
-            value={this.state.new_component}
+            value={-1}
             onChange={this.NewChanged.bind(this)}
           >
             {menu}
           </Select>
           <br />
-          <Button variant="outlined" onClick={this.Add.bind(this)}>Add</Button>
+          {/* <Button variant="outlined" onClick={this.Add.bind(this)}>Add</Button> */}
 
         </div>
 
@@ -237,15 +249,17 @@ class Builder extends React.Component<BuildProps, BuildState> {
 }
 
 interface BuildProps {
+  ParrentName: string,
   config: any,
   SendBuild: (build: any) => void,
   onRef?: any,
 }
 interface BuildState {
   new_component: number,
-  config: any
-  build: Build
-  id: number
+  config: any,
+  build: Build,
+  id: number,
+  parrent_component_name: string
 }
 
 

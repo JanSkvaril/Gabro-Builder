@@ -145,7 +145,7 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
         //console.log(this.state.active_props);
         //console.log(this.state.pos_props);
         let menu: any = [];
-        menu.push(<MenuItem key={-1} value={-1}>{<i>Select new prop</i>}</MenuItem>);
+        menu.push(<MenuItem key={-1} value={-1}>{<i>Add prop</i>}</MenuItem>);
         let i = 0;
 
         for (let prop of this.state.pos_props) {
@@ -176,7 +176,12 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
         new_name_menu.push(<MenuItem key={-1} value={-1}>{<i>Change to</i>}</MenuItem>);
         for (let name of component_names) {
             if (name != "Text") {
-                new_name_menu.push(<MenuItem key={i} value={i}>{name}</MenuItem>);
+                for (let allowed_change of this.props.canChangeTo) {
+                    if (allowed_change != this.state.name && allowed_change == name) {
+                        new_name_menu.push(<MenuItem key={i} value={i}>{name}</MenuItem>);
+                        break;
+                    }
+                }
             }
             i++;
         }
@@ -230,7 +235,7 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
                     </div>
                     <div>
                         <h4>Content:</h4>
-                        <Builder onRef={ref => (this.SetChildBuild = ref)} SendBuild={this.SubBuildSend.bind(this)} config={this.state.config} />
+                        <Builder ParrentName={this.state.name} onRef={ref => (this.SetChildBuild = ref)} SendBuild={this.SubBuildSend.bind(this)} config={this.state.config} />
                     </div>
                 </div>);
         }
@@ -244,6 +249,7 @@ interface BlockProps {
         name: string,
         type: string
     }[],
+    canChangeTo: any,
     active_props: Prop[],
     OnChange: (id: number, val: any) => void,
     SubBuildUpdate: (id: number, build: any) => void,
