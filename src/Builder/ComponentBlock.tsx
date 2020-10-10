@@ -6,6 +6,7 @@ import PropBlock from "./PropBlock";
 import "./Builder.css";
 import { Button } from "@material-ui/core";
 import { Build, Component, Prop } from './Interfaces'
+const { dialog } = require('electron').remote;
 
 class ComponentBlock extends React.Component<BlockProps, BlockState> {
     state: BlockState;
@@ -14,6 +15,7 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
     OnDelete: (id: number) => void;
     OnMove: (id: number, dir: "up" | "down") => void;
     OnDuplicate: (id: number) => void;
+    OnNameChange: (id: number, new_name: string) => void;
     SetChildBuild: any;
     constructor(props: BlockProps) {
         super(props);
@@ -26,23 +28,12 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
             config: props.config,
             color: "rgb(" + (Math.random() * 100 + 150) + "," + (Math.random() * 100 + 150) + "," + (Math.random() * 100 + 150) + ")"
         }
-
-        // for (let i = 0; i < this.state.pos_props.length; i++) {
-        //     this.state.pos_props[i].used = false;
-        // }
-        // for (let i = 0; i < this.state.active_props.length; i++) {
-        //     for (let j = 0; j < this.state.pos_props.length; j++) {
-        //         if (this.state.active_props[i].name == this.state.pos_props[j].name) {
-        //             this.state.pos_props[j].used = true;
-        //         }
-
-        //     }
-        // }
         this.Update = this.props.OnChange;
         this.SubBuildUpdate = props.SubBuildUpdate;
         this.OnDelete = this.props.OnDelete;
         this.OnMove = this.props.OnMove;
         this.OnDuplicate = this.props.OnDuplicate;
+        this.OnNameChange = this.props.OnNameChange;
     }
     componentDidMount() {
         if (this.state.name == "Text" && this.state.active_props.length == 0) {
@@ -96,7 +87,16 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
         this.SubBuildUpdate(this.state.id, build);
     }
     Delete() {
-        this.OnDelete(this.state.id);
+
+        dialog.showMessageBox({
+            buttons: ["Yes", "Cancel"],
+            message: "Do you really want to delete this component?"
+        }).then((data) => {
+            if (data.response == "0") {
+                this.OnDelete(this.state.id);
+            }
+        })
+
     }
     MoveDown() {
         this.OnMove(this.state.id, "down");
@@ -106,6 +106,19 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
     }
     Duplicate() {
         this.OnDuplicate(this.state.id);
+    }
+    ChangeName(e) {
+        dialog.showMessageBox({
+            buttons: ["Yes", "Cancel"],
+            message: "Do you really want to delete this component?"
+        }).then((data) => {
+            if (data.response == "0") {
+                let new_name = Object.keys(this.state.config.components)[e.target.value];
+                console.log(new_name);
+                this.OnNameChange(this.state.id, new_name);
+            }
+        })
+
     }
 
     render() {
@@ -136,6 +149,18 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
             active_props.push(<PropBlock key={i} name={prop.name} type={prop.type} value={prop.val} onChange={this.PropChanged.bind(this)} />)
             i++;
         }
+
+        let component_names = Object.keys(this.state.config.components);
+        let new_name_menu: any[] = [];
+        i = 0;
+        new_name_menu.push(<MenuItem key={-1} value={-1}>{<i>Change to</i>}</MenuItem>);
+        for (let name of component_names) {
+            if (name != "Text") {
+                new_name_menu.push(<MenuItem key={i} value={i}>{name}</MenuItem>);
+            }
+            i++;
+        }
+
         let header = <div> <h3>{this.state.name} {this.state.id}</h3>
             <Button onClick={this.Delete.bind(this)}>Delete</Button>
             <Button onClick={this.MoveDown.bind(this)}>DOWN</Button>
@@ -160,6 +185,12 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
             return (
                 <div key={this.state.id} className="component-block" style={styles}>
                     {header}
+                    <Select
+                        value={-1}
+                        onChange={this.ChangeName.bind(this)}
+                    >
+                        {new_name_menu}
+                    </Select>
                     <div className="component-props">
                         <div>
                             <h4>Props:  </h4>
@@ -199,6 +230,7 @@ interface BlockProps {
     OnDelete: (id: number) => void,
     OnMove: (id: number, dir: "up" | "down") => void,
     OnDuplicate: (id: number) => void,
+    OnNameChange: (id: number, new_name: string) => void,
     config: any,
     PreviousBuild?: Build | null
 }

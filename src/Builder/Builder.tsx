@@ -154,6 +154,31 @@ class Builder extends React.Component<BuildProps, BuildState> {
       id: this.state.id + 1,
     })
   }
+  HandleComponentNameChange(id: number, new_name: string) {
+    let new_build: Build = [];
+    for (let i = 0; i < this.state.build.length; i++) {
+
+      if (this.state.build[i].id == id) {
+        let new_component: Component = {
+          children: JSON.parse(JSON.stringify(this.state.build[i].children)),
+          id: this.state.id,
+          name: new_name,
+          props: []
+        }
+
+        new_build.push(new_component);
+      }
+      else {
+
+        new_build.push(this.state.build[i]);
+      }
+    }
+    this.SendBuild(new_build);
+    this.setState({
+      build: new_build,
+      id: this.state.id + 1
+    })
+  }
   render() {
     //console.log(this.state.config)
     if (this.state.config == null) return <div>error</div>;
@@ -182,6 +207,7 @@ class Builder extends React.Component<BuildProps, BuildState> {
           OnDelete={this.ComponentDeleted.bind(this)}
           OnMove={this.HandleMove.bind(this)}
           OnDuplicate={this.HandleDulicate.bind(this)}
+          OnNameChange={this.HandleComponentNameChange.bind(this)}
           PreviousBuild={component.children}
         />)
       i++;
