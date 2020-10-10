@@ -33,6 +33,7 @@ class Builder extends React.Component<BuildProps, BuildState> {
         highest_id = comp.id;
       }
     }
+    if (highest_id == -100) highest_id = -1;
     this.setState({
       build: new_build,
       id: highest_id + 1
