@@ -2,8 +2,8 @@ import React from "react";
 import { TextField } from '@material-ui/core';
 
 
-class PropBlock extends React.Component<PropBlockProps> {
-    state: any;
+class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
+    state: PropBlockState;
     SendUpdate: (name: string, val: string) => void;
     constructor(props: PropBlockProps) {
         super(props);
@@ -69,8 +69,12 @@ class PropBlock extends React.Component<PropBlockProps> {
 interface PropBlockProps {
     name: string,
     type: string,
-    value: string,
+    value?: string,
     onChange: (name: string, val: string) => void
 }
-
+interface PropBlockState {
+    name: string,
+    type: string,
+    val?: string,
+}
 export default PropBlock;

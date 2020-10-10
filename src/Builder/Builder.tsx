@@ -5,11 +5,11 @@ import Select from '@material-ui/core/Select';
 import { Button } from '@material-ui/core';
 import { ReactNode } from 'react';
 import ComponentBlock from './ComponentBlock';
+import { Build, Component, Prop } from './Interfaces'
 
 
-
-class Builder extends React.Component<BuildProps> {
-  state: any;
+class Builder extends React.Component<BuildProps, BuildState> {
+  state: BuildState
   SendBuild: any;
   constructor(props: BuildProps) {
     super(props);
@@ -102,7 +102,7 @@ class Builder extends React.Component<BuildProps> {
     });
   }
   HandleMove(id: number, dir: "up" | "down") {
-    let new_build: any = [];
+    let new_build: Build = [];
     if (dir == "down") {
 
       for (let i = 0; i < this.state.build.length; i++) {
@@ -138,6 +138,22 @@ class Builder extends React.Component<BuildProps> {
       build: new_build
     });
   }
+  HandleDulicate(id: number) {
+    let new_build: Build = [];
+    for (let i = 0; i < this.state.build.length; i++) {
+      new_build.push(this.state.build[i]);
+      if (this.state.build[i].id == id) {
+        let copy: Component = JSON.parse(JSON.stringify(this.state.build[i]));
+        copy.id = this.state.id;
+        new_build.push(copy);
+      }
+    }
+    this.SendBuild(new_build);
+    this.setState({
+      build: new_build,
+      id: this.state.id + 1,
+    })
+  }
   render() {
     //console.log(this.state.config)
     if (this.state.config == null) return <div>error</div>;
@@ -151,7 +167,7 @@ class Builder extends React.Component<BuildProps> {
     let active_components: ReactNode[] = [];
     i = 0;
     for (let component of this.state.build) {
-      let posible_props = [...this.state.config.components[component.name].props];
+      let posible_props: Prop[] = [...this.state.config.components[component.name].props];
       // console.log(component.props);
       active_components.push(
         <ComponentBlock
@@ -165,6 +181,7 @@ class Builder extends React.Component<BuildProps> {
           SubBuildUpdate={this.RecieveBuild.bind(this)}
           OnDelete={this.ComponentDeleted.bind(this)}
           OnMove={this.HandleMove.bind(this)}
+          OnDuplicate={this.HandleDulicate.bind(this)}
           PreviousBuild={component.children}
         />)
       i++;
@@ -197,6 +214,12 @@ interface BuildProps {
   config: any,
   SendBuild: (build: any) => void,
   onRef?: any,
+}
+interface BuildState {
+  new_component: number,
+  config: any
+  build: Build
+  id: number
 }
 
 

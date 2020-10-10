@@ -5,13 +5,15 @@ import Builder from "./Builder";
 import PropBlock from "./PropBlock";
 import "./Builder.css";
 import { Button } from "@material-ui/core";
+import { Build, Component, Prop } from './Interfaces'
 
-class ComponentBlock extends React.Component<BlockProps> {
-    state: any;
+class ComponentBlock extends React.Component<BlockProps, BlockState> {
+    state: BlockState;
     Update: (id: number, val: any) => void;
     SubBuildUpdate: (id: number, build: any) => void;
     OnDelete: (id: number) => void;
     OnMove: (id: number, dir: "up" | "down") => void;
+    OnDuplicate: (id: number) => void;
     SetChildBuild: any;
     constructor(props: BlockProps) {
         super(props);
@@ -40,6 +42,7 @@ class ComponentBlock extends React.Component<BlockProps> {
         this.SubBuildUpdate = props.SubBuildUpdate;
         this.OnDelete = this.props.OnDelete;
         this.OnMove = this.props.OnMove;
+        this.OnDuplicate = this.props.OnDuplicate;
     }
     componentDidMount() {
         if (this.state.name == "Text" && this.state.active_props.length == 0) {
@@ -101,6 +104,10 @@ class ComponentBlock extends React.Component<BlockProps> {
     MoveUp() {
         this.OnMove(this.state.id, "up");
     }
+    Duplicate() {
+        this.OnDuplicate(this.state.id);
+    }
+
     render() {
         //console.log(this.state.active_props);
         //console.log(this.state.pos_props);
@@ -129,14 +136,16 @@ class ComponentBlock extends React.Component<BlockProps> {
             active_props.push(<PropBlock key={i} name={prop.name} type={prop.type} value={prop.val} onChange={this.PropChanged.bind(this)} />)
             i++;
         }
+        let header = <div> <h3>{this.state.name} {this.state.id}</h3>
+            <Button onClick={this.Delete.bind(this)}>Delete</Button>
+            <Button onClick={this.MoveDown.bind(this)}>DOWN</Button>
+            <Button onClick={this.MoveUp.bind(this)}>UP</Button>
+            <Button onClick={this.Duplicate.bind(this)}>Duplicate</Button></div>
         if (this.state.name == "Text") {
             return (
                 <div>
                     <div className="component-block" style={styles}>
-                        <h3>{this.state.name} {this.state.id}</h3>
-                        <Button onClick={this.Delete.bind(this)}>Delete</Button>
-                        <Button onClick={this.MoveDown.bind(this)}>DOWN</Button>
-                        <Button onClick={this.MoveUp.bind(this)}>UP</Button>
+                        {header}
                         <div className="component-props">
                             <div>
                                 {active_props}
@@ -150,10 +159,7 @@ class ComponentBlock extends React.Component<BlockProps> {
 
             return (
                 <div key={this.state.id} className="component-block" style={styles}>
-                    <h3>{this.state.name} {this.state.id}</h3>
-                    <Button onClick={this.Delete.bind(this)}>Delete</Button>
-                    <Button onClick={this.MoveDown.bind(this)}>DOWN</Button>
-                    <Button onClick={this.MoveUp.bind(this)}>UP</Button>
+                    {header}
                     <div className="component-props">
                         <div>
                             <h4>Props:  </h4>
@@ -187,17 +193,25 @@ interface BlockProps {
         name: string,
         type: string
     }[],
-    active_props: {
-        name: string,
-        type: string,
-        val: string
-    }[],
+    active_props: Prop[],
     OnChange: (id: number, val: any) => void,
     SubBuildUpdate: (id: number, build: any) => void,
     OnDelete: (id: number) => void,
     OnMove: (id: number, dir: "up" | "down") => void,
+    OnDuplicate: (id: number) => void,
     config: any,
-    PreviousBuild?: any
+    PreviousBuild?: Build | null
+}
+interface BlockState {
+
+    name: string,
+    id: number,
+    pos_props: Prop[],
+    new_prop: number,
+    active_props: Prop[],
+    config: any,
+    color: string
+
 }
 
 export default ComponentBlock;
