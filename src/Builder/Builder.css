@@ -10,7 +10,7 @@
 
 .component-block {
     width: 80%;
-    min-width: 400px;
+    /* min-width: 400px; */
     margin: 15px;
     padding: 20px;
     border-radius: 10px;

@@ -158,7 +158,7 @@
                 "type": "string"
             }, {
                 "name": "iconColor?",
-                "type": "string"
+                "type": "color"
             }, {
                 "name": "divBorder?",
                 "type": "string"

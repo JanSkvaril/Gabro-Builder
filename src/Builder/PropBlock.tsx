@@ -28,7 +28,9 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
 
     }
     Changed(e) {
+
         let val: string = e.target.value;
+        console.log(val);
         if (this.state.type == "boolean") {
             val = e.target.checked;
         }
@@ -68,6 +70,14 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
                 </div>
             )
         }
+        // else if (this.state.type == "color") {
+        //     return (
+        //         <div className="prop-block">
+        //             {this.state.name}:
+
+        //         </div>
+        //     )
+        // }
         else {
             return (
                 <div className="prop-block">
