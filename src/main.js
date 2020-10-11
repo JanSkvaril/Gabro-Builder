@@ -15,6 +15,7 @@ const {
   exec
 } = require('child_process')
 
+
 const Compile = require("./GabroCompiler").Compile;
 let CONFIG;
 
@@ -30,7 +31,7 @@ const createWindow = () => {
       enableRemoteModule: true
     }
   });
- // mainWindow.removeMenu();
+  // mainWindow.removeMenu();
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
@@ -64,15 +65,40 @@ const createWindow = () => {
     //console.log("Executing: " + "cd " + project_path + " ; npm start")
     exec("npm start", {
       cwd: project_path
-    }, (error, stdout) => {
-      // console.log("ERROR: " + error);
-      // console.log("stdout: " + stdout);
-    });
+    }, (error, stdout) => {});
   });
 
   ipcMain.on("create", (e, input) => {
-    //TODO: add git clone 
+    project_path = input;
+
+    console.log(input);
+    exec("git clone https://github.com/JanSkvaril/gabro_template.git & cd gabro_template & npm i", {
+      cwd: project_path
+    }, (error, stdout) => {
+      project_path += "/gabro_template";
+      let raw = fs.readFileSync(project_path + "/" + BUILD_FILE_NAME);
+      let build = JSON.parse(raw);
+      SaveAndCompile(build);
+      e.reply("build_update", build);
+      console.log("Done");
+      exec("npm start", {
+        cwd: project_path
+      }, (error, stdout) => {});
+    });
   });
+  ipcMain.on("final-build", (e, input) => {
+
+    exec("npm run-script build", {
+      cwd: project_path
+    }, (error, stdout) => {
+      e.reply("final-build-done");
+    });
+  });
+
+
+
+
+
 };
 
 function SaveAndCompile(build) {

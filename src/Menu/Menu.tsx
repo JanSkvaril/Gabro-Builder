@@ -1,4 +1,4 @@
-import { Button, Drawer } from "@material-ui/core";
+import { Button, Drawer, LinearProgress } from "@material-ui/core";
 import React from "react";
 
 const { dialog } = require('electron').remote;
@@ -10,13 +10,22 @@ import "./Menu.css";
 let path = "";
 class Menu extends React.Component {
     state: {
-        path: string
+        path: string,
+        loading: boolean
     }
     constructor(props: any) {
         super(props)
         this.state = {
-            path: ""
+            path: "",
+            loading: false,
         }
+
+        ipcRenderer.on('build_update', (event, data) => {
+            this.setState({ loading: false })
+        });
+        ipcRenderer.on("final-build-done", (event, data) => {
+            this.setState({ loading: false })
+        });
     }
 
 
@@ -27,7 +36,8 @@ class Menu extends React.Component {
             if (result.filePaths[0] != undefined) {
                 ipcRenderer.send("set-path", result.filePaths[0]);
                 this.setState({
-                    path: result.filePaths[0]
+                    path: result.filePaths[0],
+                    loading: true
                 })
             }
         });
@@ -39,19 +49,35 @@ class Menu extends React.Component {
             properties: ['openDirectory']
         }).then((result) => {
             if (result.filePaths[0] != undefined) {
+                console.log(result.filePaths[0]);
                 ipcRenderer.send("create", result.filePaths[0]);
                 this.setState({
-                    path: result.filePaths[0]
+                    path: result.filePaths[0],
+                    loading: true
                 })
             }
         });
     }
+    Build() {
+        ipcRenderer.send("final-build");
+        this.setState({
+            loading: true
+        })
+    }
     render() {
+
         return (
             <div className="menu" >
                 <span className="menu-path">CURRENT PROJECT: {this.state.path}</span>
+                <Button onClick={this.Build.bind(this)} variant="text">Build</Button>
                 <Button onClick={this.Open.bind(this)} variant="text" > Open project</Button>
                 <Button onClick={this.Create.bind(this)} variant="text">Create new</Button>
+                {this.state.loading ?
+                    <div style={{ textAlign: "center" }}>
+                        <i> loading...</i>
+                        <LinearProgress />
+                    </div>
+                    : ""}
             </div >)
     }
 }

@@ -1,5 +1,91 @@
 {
     "components": {
+        "ImageSection": {
+            "props": [{
+                "name": "children?",
+                "type": "any"
+            }, {
+                "name": "ID?",
+                "type": "string"
+            }, {
+                "name": "version",
+                "type": "string"
+            }, {
+                "name": "orientation?",
+                "type": "string"
+            }, {
+                "name": "line?",
+                "type": "string"
+            }, {
+                "name": "paddingTop?",
+                "type": "boolean"
+            }, {
+                "name": "paddingBot?",
+                "type": "boolean"
+            }, {
+                "name": "color?",
+                "type": "string"
+            }, {
+                "name": "backgroundPosition?",
+                "type": "string"
+            }, {
+                "name": "backgroundSize?",
+                "type": "string"
+            }, {
+                "name": "textAlignMobile?",
+                "type": "string"
+            }, {
+                "name": "img?",
+                "type": "string"
+            }, {
+                "name": "positionMobile?",
+                "type": "string"
+            }, {
+                "name": "bg?",
+                "type": "string"
+            }, {
+                "name": "bgBehindText?",
+                "type": "string"
+            }, {
+                "name": "parallax",
+                "type": "boolean"
+            }, {
+                "name": "imgEndToEndPhone",
+                "type": "boolean"
+            }, {
+                "name": "block",
+                "type": "string"
+            }],
+            "can_be_in": ["root"]
+        },
+        "Row": {
+            "props": [{
+                "name": "bg?",
+                "type": "string"
+            }, {
+                "name": "color?",
+                "type": "string"
+            }, {
+                "name": "paddingBot?",
+                "type": "string"
+            }, {
+                "name": "paddingTop?",
+                "type": "string"
+            }, {
+                "name": "styled?",
+                "type": "boolean"
+            }, {
+                "name": "line?",
+                "type": "string"
+            }, {
+                "name": "children?",
+                "type": "any"
+            }, {
+                "name": "height?",
+                "type": "string"
+            }],
+            "can_be_in": ["Section"]
+        },
         "Full": {
             "props": [{
                 "name": "bg?",
@@ -114,7 +200,7 @@
                 "type": "string"
             }, {
                 "name": "menu",
-                "type": "any"
+                "type": "{ text"
             }, {
                 "name": "version",
                 "type": "\"v1\" | \"v2\""
@@ -158,7 +244,7 @@
                 "type": "string"
             }, {
                 "name": "iconColor?",
-                "type": "color"
+                "type": "string"
             }, {
                 "name": "divBorder?",
                 "type": "string"
@@ -306,7 +392,7 @@
                 "name": "children?",
                 "type": "string"
             }],
-            "can_be_in": ["Full", "Half", "Footer", "LandingPage", "Card", "ContactForm"]
+            "can_be_in": ["Full", "Half", "Footer", "LandingPage", "Card", "ContactForm", "h1", "h2", "h3", "h4", "p", "a"]
         },
         "Text": {
             "props": [{
