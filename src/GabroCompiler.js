@@ -32,12 +32,21 @@ function ConvertToJsx(component, config) {
   for (let prop of component.props) {
     if (prop.val == "") continue;
     let name = prop.name.replace("?", "")
-    let val = prop.val;
-    if (prop.type == "color"){
-      val = `rgba(${val.r}, ${val.g}, ${val.b}, ${val.a})`
+    let val = '"' + prop.val + '"';
+    if (prop.type == "color") {
+      val = `"rgba(${prop.val.r}, ${prop.val.g}, ${prop.val.b}, ${prop.val.a})"`
+    } else if (prop.type == "filePath") {
+      val = val.replaceAll("\\", "\\\\");
+      val = "{require(" + val + ")}"
+    } else if (prop.type == "bg") {
+      let col1 = `rgba(${prop.val.gradient[0].r}, ${prop.val.gradient[0].g}, ${prop.val.gradient[0].b}, ${prop.val.gradient[0].a})`
+      let col2 = `rgba(${prop.val.gradient[1].r}, ${prop.val.gradient[1].g}, ${prop.val.gradient[1].b}, ${prop.val.gradient[1].a})`
+      val = `{"linear-gradient(${col1}, ${col2}), "+`;
+      val += `GetImage(require("${prop.val.bgImagePath.replaceAll("\\", "\\\\")}"))}` 
+      ;
     }
-    console.log(val);
-    props += " " + name + '="' + val + '" ';
+
+    props += " " + name + '=' + val + ' ';
   }
   syntax = syntax.replace("{atr}", props);
 
@@ -65,6 +74,7 @@ function WrapWithBase(data, config) {
       imports += component + ",";
     }
   }
+  imports += " GetImage"
   return "import React from 'react'\n \
     import './App.scss';\n \
     import {" +

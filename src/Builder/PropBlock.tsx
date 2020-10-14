@@ -1,6 +1,7 @@
 import React from "react";
-import { Checkbox, FormControlLabel, MenuItem, Select, TextField } from '@material-ui/core';
+import { Button, Checkbox, FormControlLabel, MenuItem, Select, TextField } from '@material-ui/core';
 import { SketchPicker } from 'react-color';
+const { dialog } = require('electron').remote;
 
 class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
     state: PropBlockState;
@@ -34,6 +35,12 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
             val = e;
         }
         else if (this.state.type.split("|").length > 1) {
+            val = e;
+        }
+        else if (this.state.type == "filePath") {
+            val = e;
+        }
+        else if (this.state.type == "bg") {
             val = e;
         }
         else {
@@ -75,6 +82,13 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
 
                 />)
         }
+        else if (this.state.type == "filePath") {
+            return (
+                <div className="prop-block">
+                    <b>{this.state.name}</b> <i>{this.state.val}</i> <PathSelector onChange={this.Changed.bind(this)} />
+                </div>
+            )
+        }
         else if (this.state.type == "boolean") {
             return (
                 <div className="prop-block">
@@ -98,6 +112,15 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
                     </div>
                     <ColorPicker onChange={this.Changed.bind(this)} color={this.state.val} /><br />
                 </div>
+            )
+        }
+        else if (this.state.type == "bg") {
+            return (
+                <div style={{ margin: "10px", padding: "20px", border: "1px solid rgba(0,0,0,0.3)", borderRadius: "15px" }}>
+                    <h3>{this.props.name}</h3> <br />
+                    <BgPicker val={this.state.val} onChange={this.Changed.bind(this)} />
+                </div>
+
             )
         }
         else {
@@ -184,7 +207,7 @@ class ColorPicker extends React.Component<ColorPickerProps> {
         console.log(props.color);
         this.state = {
             displayColorPicker: false,
-            color: {
+            color: props.color || {
                 r: "122",
                 g: "12",
                 b: "122",
@@ -261,7 +284,86 @@ interface ColorPickerProps {
     color?: string
 }
 
+class PathSelector extends React.Component<PathProps> {
+    state: any
+    constructor(props: PathProps) {
+        super(props);
+    }
+    Open() {
+        dialog.showOpenDialog({
+            properties: ['openFile']
+        }).then((result) => {
+            if (result.filePaths[0] != undefined) {
+                this.props.onChange(result.filePaths[0])
+            }
+        });
 
+    }
+    render() {
+        return (
+            <Button onClick={this.Open.bind(this)} variant="outlined" > Select</Button>
+        )
+    }
+}
+interface PathProps {
+    onChange: (path: string) => void,
+}
+
+class BgPicker extends React.Component<BgProps> {
+    state: any
+    constructor(props: BgProps) {
+        super(props);
+        this.state = {
+            gradient: props.val.gradient || [{}, {}],
+            bgImagePath: props.val.bgImagePath
+        };
+    }
+    Update = () => {
+        this.props.onChange({
+            gradient: this.state.gradient,
+            bgImagePath: this.state.bgImagePath
+        })
+    }
+    ChangeFirstColor = (color) => {
+        let new_gradient = [...this.state.gradient];
+        new_gradient[0] = color;
+        this.setState({
+            gradient: new_gradient
+        }, this.Update)
+    }
+    ChangeSecondColor = (color) => {
+        let new_gradient = [...this.state.gradient];
+        new_gradient[1] = color;
+        this.setState({
+            gradient: new_gradient
+        }, this.Update)
+    }
+    ChangePath = (path) => {
+        this.setState({
+            bgImagePath: path
+        }, this.Update)
+    }
+    render() {
+
+        return (
+            <div>
+                <div style={{ width: "100%", height: "30px" }}>
+                    <b style={{ float: "left" }}>Background Gradient:</b>
+                    <ColorPicker color={this.state.gradient[0]} onChange={this.ChangeFirstColor} />
+                    <ColorPicker color={this.state.gradient[1]} onChange={this.ChangeSecondColor} />
+                </div>
+
+                <div style={{ width: "100%" }}>
+                    <b>Background image:</b> <i>{this.state.bgImagePath}</i> <PathSelector onChange={this.ChangePath.bind(this)} />
+                </div>
+            </div>
+        )
+    }
+}
+interface BgProps {
+    val: any
+    onChange: (bg: any) => void
+}
 
 
 

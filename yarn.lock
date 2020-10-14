@@ -3826,6 +3826,11 @@ klona@^2.0.3:
   resolved "https://registry.yarnpkg.com/klona/-/klona-2.0.4.tgz#7bb1e3affb0cb8624547ef7e8f6708ea2e39dfc0"
   integrity sha512-ZRbnvdg/NxqzC7L9Uyqzf4psi1OM4Cuc+sJAkQPjO6XkQIJTNbfK2Rsmbw8fx1p2mkZdp2FZYo2+LwXYY/uwIA==
 
+linear-gradient-parser@^1.1.7:
+  version "1.1.7"
+  resolved "https://registry.yarnpkg.com/linear-gradient-parser/-/linear-gradient-parser-1.1.7.tgz#97792f776783715f56f3b0a97ea55f6299975784"
+  integrity sha512-pyk6fIZbJT+i4VbNG2LJwX6WGoGUoLufVscxaqI5cqP6M9TPxCCpKeVI3VX36NEGLcpberJQZbDbYHjTdncutA==
+
 lines-and-columns@^1.1.6:
   version "1.1.6"
   resolved "https://registry.yarnpkg.com/lines-and-columns/-/lines-and-columns-1.1.6.tgz#1c00c743b433cd0a4e80758f7b64a57440d9ff00"
@@ -5272,6 +5277,13 @@ react-is@^16.7.0, react-is@^16.8.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
+
+react-linear-gradient-picker@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/react-linear-gradient-picker/-/react-linear-gradient-picker-1.1.3.tgz#b71df784305ad8741d2afe4a44fc1dce86233c1b"
+  integrity sha512-97x5j5WwYPfFd8ncuhpntDkKfrhXuMOCmGBz+Iap1VmgPEBzGo3ciD19dop4o5QJE3mVcCPEi7qbYwxvnhLwog==
+  dependencies:
+    linear-gradient-parser "^1.1.7"
 
 react-transition-group@^4.4.0:
   version "4.4.1"
