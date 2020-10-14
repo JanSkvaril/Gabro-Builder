@@ -32,7 +32,12 @@ function ConvertToJsx(component, config) {
   for (let prop of component.props) {
     if (prop.val == "") continue;
     let name = prop.name.replace("?", "")
-    props += " " + name + '="' + prop.val + '" ';
+    let val = prop.val;
+    if (prop.type == "color"){
+      val = `rgba(${val.r}, ${val.g}, ${val.b}, ${val.a})`
+    }
+    console.log(val);
+    props += " " + name + '="' + val + '" ';
   }
   syntax = syntax.replace("{atr}", props);
 
