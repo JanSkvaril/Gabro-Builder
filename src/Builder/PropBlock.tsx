@@ -25,6 +25,9 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
         // }
 
     }
+    Remove() {
+        this.props.onRemove(this.state.name);
+    }
     Changed(e) {
 
         let val: string;
@@ -54,6 +57,7 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
         this.SendUpdate(this.state.name, val);
     }
     render() {
+        let remove_button = <Button onClick={this.Remove.bind(this)} variant="text"><i>remove</i></Button>
         if (this.state.type.split("|").length > 1) { //combo box
             let options = this.state.type.split("|");
             for (let i = 0; i < options.length; i++) {
@@ -62,30 +66,35 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
             return (
                 <div className="prop-block">
                     <b> {this.state.name}:</b> <ComboBox onChange={this.Changed.bind(this)} options={options} val={this.state.val} />
+                    {remove_button}
                 </div>
             )
         }
         else if (this.state.type == "ritch") {
             return (
-                <TextField
+                <div>
+                    <TextField
 
-                    onChange={this.Changed.bind(this)}
-                    value={this.state.val}
-                    size="small"
-                    fullWidth={true}
-                    label={"Text"}
-                    placeholder={"<p>Same text</p>"}
-                    variant="outlined"
-                    multiline
-                    rowsMax={10}
-                    rows={4}
+                        onChange={this.Changed.bind(this)}
+                        value={this.state.val}
+                        size="small"
+                        fullWidth={true}
+                        label={"Text"}
+                        placeholder={"<p>Same text</p>"}
+                        variant="outlined"
+                        multiline
+                        rowsMax={10}
+                        rows={4}
 
-                />)
+                    />
+
+                </div>)
         }
         else if (this.state.type == "filePath") {
             return (
                 <div className="prop-block">
                     <b>{this.state.name}</b> <i>{this.state.val}</i> <PathSelector onChange={this.Changed.bind(this)} />
+                    {remove_button}
                 </div>
             )
         }
@@ -98,6 +107,7 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
                         }
                         label={this.state.name}
                     />
+                    {remove_button}
                 </div>
             )
         }
@@ -105,20 +115,24 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
 
             return (
                 <div className="prop-block">
-                    <div style={{ float: "left" }}>
+                    <div style={{ float: "left", margin: "5px" }}>
                         <b>
                             {this.state.name}:
                         </b>
                     </div>
-                    <ColorPicker onChange={this.Changed.bind(this)} color={this.state.val} /><br />
+                    <ColorPicker onChange={this.Changed.bind(this)} color={this.state.val} />
+                    {remove_button}
+                    <br />
+
                 </div>
             )
         }
         else if (this.state.type == "bg") {
             return (
                 <div style={{ margin: "10px", padding: "20px", border: "1px solid rgba(0,0,0,0.3)", borderRadius: "15px" }}>
-                    <h3>{this.props.name}</h3> <br />
+                    <h3>{this.props.name}  {remove_button}</h3> <br />
                     <BgPicker val={this.state.val} onChange={this.Changed.bind(this)} />
+
                 </div>
 
             )
@@ -134,6 +148,7 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
                         label={this.props.name}
                         placeholder={this.props.type}
                         variant="outlined" />
+                    {remove_button}
                 </div>
             )
         }
@@ -143,7 +158,8 @@ interface PropBlockProps {
     name: string,
     type: string,
     value?: string,
-    onChange: (name: string, val: string) => void
+    onChange: (name: string, val: string) => void,
+    onRemove: (prop_name: string) => void,
 }
 interface PropBlockState {
     name: string,
@@ -215,7 +231,11 @@ class ColorPicker extends React.Component<ColorPickerProps> {
             },
         };
     }
-
+    componentDidMount() {
+        if (!this.props.color) {
+            this.props.onChange(this.state.color);
+        }
+    }
 
     handleClick = () => {
         this.setState({ displayColorPicker: !this.state.displayColorPicker })
@@ -239,13 +259,13 @@ class ColorPicker extends React.Component<ColorPickerProps> {
             color: {
                 width: '36px',
                 height: '14px',
-                borderRadius: '2px',
+                borderRadius: '7px',
                 background: `rgba(${this.state.color.r}, ${this.state.color.g}, ${this.state.color.b}, ${this.state.color.a})`,
             },
             swatch: {
                 padding: '5px',
                 background: '#fff',
-                borderRadius: '1px',
+                borderRadius: '7px',
                 boxShadow: '0 0 0 1px rgba(0,0,0,.1)',
                 display: 'inline-block',
                 cursor: 'pointer',
@@ -254,7 +274,7 @@ class ColorPicker extends React.Component<ColorPickerProps> {
         };
 
         return (
-            <div style={{ float: "left", marginLeft: "10px" }}>
+            <div style={{ float: "left", margin: "5px" }}>
                 <div style={styles.swatch} onClick={this.handleClick}>
                     <div style={styles.color} />
                 </div>
@@ -314,8 +334,8 @@ class BgPicker extends React.Component<BgProps> {
     constructor(props: BgProps) {
         super(props);
         this.state = {
-            gradient: props.val.gradient || [{}, {}],
-            bgImagePath: props.val.bgImagePath
+            gradient: props.val.gradient || [{ r: 0, g: 0, b: 0, a: 0 }, { r: 0, g: 0, b: 0, a: 0 }],
+            bgImagePath: props.val.bgImagePath || "",
         };
     }
     Update = () => {
@@ -327,6 +347,9 @@ class BgPicker extends React.Component<BgProps> {
     ChangeFirstColor = (color) => {
         let new_gradient = [...this.state.gradient];
         new_gradient[0] = color;
+        if (JSON.stringify(this.state.gradient[0]) == JSON.stringify({ r: 0, g: 0, b: 0, a: 0 })) {
+            new_gradient[0].a = 1;
+        }
         this.setState({
             gradient: new_gradient
         }, this.Update)
@@ -334,6 +357,9 @@ class BgPicker extends React.Component<BgProps> {
     ChangeSecondColor = (color) => {
         let new_gradient = [...this.state.gradient];
         new_gradient[1] = color;
+        if (JSON.stringify(this.state.gradient[1]) == JSON.stringify({ r: 0, g: 0, b: 0, a: 0 })) {
+            new_gradient[1].a = 1;
+        }
         this.setState({
             gradient: new_gradient
         }, this.Update)
@@ -347,16 +373,16 @@ class BgPicker extends React.Component<BgProps> {
 
         return (
             <div>
-                <div style={{ width: "100%", height: "30px" }}>
-                    <b style={{ float: "left" }}>Background Gradient:</b>
+                <div style={{ width: "100%", height: "40px" }}>
+                    <b style={{ float: "left", margin: "5px" }}>Background Gradient:</b>
                     <ColorPicker color={this.state.gradient[0]} onChange={this.ChangeFirstColor} />
                     <ColorPicker color={this.state.gradient[1]} onChange={this.ChangeSecondColor} />
                 </div>
 
-                <div style={{ width: "100%" }}>
+                <div style={{ width: "100%", margin: "5px" }}>
                     <b>Background image:</b> <i>{this.state.bgImagePath}</i> <PathSelector onChange={this.ChangePath.bind(this)} />
                 </div>
-            </div>
+            </div >
         )
     }
 }

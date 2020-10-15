@@ -91,6 +91,19 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
                 // this.render();
             });
     }
+    Remove(props_name) {
+        let new_active_props: Prop[] = [];
+        for (let i = 0; i < this.state.active_props.length; i++) {
+            if (this.state.active_props[i].name != props_name) {
+                new_active_props.push(this.state.active_props[i]);
+            }
+        }
+        this.Update(this.state.id, new_active_props);
+        this.setState(
+            {
+                active_props: new_active_props,
+            });
+    }
     PropChanged(name: string, val: string) {
         let new_active_props = [...this.state.active_props];
         for (let i = 0; i < new_active_props.length; i++) {
@@ -166,7 +179,14 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
         //  console.log(this.state.pos_props);
         for (let prop of this.state.active_props) {
 
-            active_props.push(<PropBlock key={i} name={prop.name} type={prop.type} value={prop.val} onChange={this.PropChanged.bind(this)} />)
+            active_props.push(
+                <PropBlock
+                    key={i}
+                    name={prop.name}
+                    type={prop.type}
+                    value={prop.val}
+                    onChange={this.PropChanged.bind(this)}
+                    onRemove={this.Remove.bind(this)} />)
             i++;
         }
 
