@@ -8,6 +8,7 @@ import { Button } from "@material-ui/core";
 import { Build, Component, Prop } from './Interfaces'
 const { dialog } = require('electron').remote;
 
+/** Component block added in builder. I has its own builder for children */
 class ComponentBlock extends React.Component<BlockProps, BlockState> {
     state: BlockState;
     Update: (id: number, val: any) => void;
@@ -263,21 +264,34 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
 };
 
 interface BlockProps {
+    /** Name of the component - like Section */
     name: string,
+    /** Unique id */
     id: number,
+    /** Possible props */
     pos_props: {
         name: string,
         type: string
     }[],
+    /** Allowed children of the parrent */
     canChangeTo: any,
+    /** Props changed by user */
     active_props: Prop[],
+    /** Called on any change */
     OnChange: (id: number, val: any) => void,
+    /** Components buiild changed */
     SubBuildUpdate: (id: number, build: any) => void,
+    /** When user clicks on delete button */
     OnDelete: (id: number) => void,
+    /** When user moves the component */
     OnMove: (id: number, dir: "up" | "down") => void,
+    /** When user click on duplicate button */
     OnDuplicate: (id: number) => void,
+    /** When user changes type of the component */
     OnNameChange: (id: number, new_name: string) => void,
+    /** Config file */
     config: any,
+    /** Loaded build */
     PreviousBuild?: Build | null
 }
 interface BlockState {

@@ -7,7 +7,9 @@ import { ReactNode } from 'react';
 import ComponentBlock from './ComponentBlock';
 import { Build, Component, Prop } from './Interfaces'
 
-
+/**
+ * Builder holds added components and select button for adding new ones.  
+ */
 class Builder extends React.Component<BuildProps, BuildState> {
   state: BuildState
   SendBuild: any;
@@ -26,6 +28,7 @@ class Builder extends React.Component<BuildProps, BuildState> {
     if (this.props.onRef != undefined)
       this.props.onRef(this.SetBuild.bind(this))
   }
+  /** Sets build from parrent component */
   SetBuild(new_build) {
     let highest_id = -100;
     for (let comp of new_build) {
@@ -39,8 +42,8 @@ class Builder extends React.Component<BuildProps, BuildState> {
       id: highest_id + 1
     });
   }
+  /** Adds new component to the build */
   Add(index) {
-
     let selected = Object.keys(this.state.config.components)[index];
     let id = this.state.id;
 
@@ -57,9 +60,11 @@ class Builder extends React.Component<BuildProps, BuildState> {
       id: this.state.id + 1
     });
   }
+  /** Clicked on selelct */
   NewChanged(e) {
     this.Add(e.target.value);
   }
+  /** Prop from child component changed */
   PropsChanged(id, val) {
     let new_build = [...this.state.build];
     for (let i = 0; i < new_build.length; i++) {
@@ -73,6 +78,7 @@ class Builder extends React.Component<BuildProps, BuildState> {
       }
     }
   }
+  /** Get build from child component */
   RecieveBuild(id, build) {
     let new_build = [...this.state.build];
     for (let i = 0; i < new_build.length; i++) {
@@ -87,10 +93,8 @@ class Builder extends React.Component<BuildProps, BuildState> {
     }
 
   }
+  /** For handling removing components */
   ComponentDeleted(id) {
-    // if (!confirm("Are you sure you want do delete this component?")) {
-    //   return;
-    // }
     let new_build: any = [];
     for (let i = 0; i < this.state.build.length; i++) {
       if (this.state.build[i].id != id) {
@@ -103,6 +107,8 @@ class Builder extends React.Component<BuildProps, BuildState> {
       build: new_build
     });
   }
+
+  /** Moves order of components */
   HandleMove(id: number, dir: "up" | "down") {
     let new_build: Build = [];
     if (dir == "down") {
@@ -121,9 +127,7 @@ class Builder extends React.Component<BuildProps, BuildState> {
       }
     }
     else {
-
       for (let i = 0; i < this.state.build.length; i++) {
-
         if (this.state.build[i].id == id) {
           if (i == 0) return;
           new_build.pop();
@@ -140,6 +144,8 @@ class Builder extends React.Component<BuildProps, BuildState> {
       build: new_build
     });
   }
+
+  /** Duplicates given component */
   HandleDulicate(id: number) {
     let new_build: Build = [];
     for (let i = 0; i < this.state.build.length; i++) {
@@ -156,6 +162,8 @@ class Builder extends React.Component<BuildProps, BuildState> {
       id: this.state.id + 1,
     })
   }
+
+  /** When component changes to different one - will remove props */
   HandleComponentNameChange(id: number, new_name: string) {
     let new_build: Build = [];
     for (let i = 0; i < this.state.build.length; i++) {
@@ -182,7 +190,6 @@ class Builder extends React.Component<BuildProps, BuildState> {
     })
   }
   render() {
-    //console.log(this.state.config)
     if (this.state.config == null) return <div>error</div>;
     let component_names = Object.keys(this.state.config.components);
     let menu: ReactNode[] = [];
@@ -197,7 +204,6 @@ class Builder extends React.Component<BuildProps, BuildState> {
           break;
         }
       }
-
       i++;
     }
 
@@ -205,7 +211,6 @@ class Builder extends React.Component<BuildProps, BuildState> {
     i = 0;
     for (let component of this.state.build) {
       let posible_props: Prop[] = [...this.state.config.components[component.name].props];
-      // console.log(component.props);
       active_components.push(
         <ComponentBlock
           canChangeTo={[...canChangeTo]}
@@ -231,8 +236,6 @@ class Builder extends React.Component<BuildProps, BuildState> {
           {active_components}
         </div>
         <div className="new">
-
-
           <Select
             value={-1}
             onChange={this.NewChanged.bind(this)}
@@ -240,8 +243,6 @@ class Builder extends React.Component<BuildProps, BuildState> {
             {menu}
           </Select>
           <br />
-          {/* <Button variant="outlined" onClick={this.Add.bind(this)}>Add</Button> */}
-
         </div>
 
 
@@ -250,9 +251,13 @@ class Builder extends React.Component<BuildProps, BuildState> {
 }
 
 interface BuildProps {
+  /** Type of parrent component - for allowed child component */
   ParrentName: string,
+  /** Config file */
   config: any,
+  /** Function called when build is changed */
   SendBuild: (build: any) => void,
+  /** To set loaded build */
   onRef?: any,
 }
 interface BuildState {

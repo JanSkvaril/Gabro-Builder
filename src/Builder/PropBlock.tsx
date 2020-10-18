@@ -3,6 +3,9 @@ import { Button, Checkbox, FormControlLabel, MenuItem, Select, TextField } from 
 import { SketchPicker } from 'react-color';
 const { dialog } = require('electron').remote;
 
+/**
+ * Contains specific prop
+ */
 class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
     state: PropBlockState;
     SendUpdate: (name: string, val: string) => void;
@@ -18,11 +21,6 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
         this.SendUpdate = this.props.onChange;
     }
     componentDidMount() {
-        // if (this.state.type == "boolean" && this.state.val == "") {
-        //     this.setState({
-        //         val: "true"
-        //     })
-        // }
 
     }
     Remove() {

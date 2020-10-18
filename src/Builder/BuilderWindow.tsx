@@ -2,6 +2,7 @@ import { ipcRenderer } from "electron";
 import React from "react";
 import Builder from "./Builder";
 
+/** Main component holding all other components and builds */
 class BuilderWindow extends React.Component {
     state: any;
     SetChildBuild: any;
