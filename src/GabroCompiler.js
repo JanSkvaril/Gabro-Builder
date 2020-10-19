@@ -31,6 +31,7 @@ function ConvertToJsx(component, config) {
   let props = "";
   for (let prop of component.props) {
     if (prop.val == "") continue;
+    if (prop.val == undefined) continue;
     let name = prop.name.replace("?", "")
     let val = '"' + prop.val + '"';
     if (prop.type == "color") {
