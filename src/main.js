@@ -5,8 +5,7 @@ const {
 } = require('electron');
 const path = require('path');
 const fs = require('fs');
-// Handle creating/removing shortcuts on Windows when installing/uninstalling.
-if (require('electron-squirrel-startup')) { // eslint-disable-line global-require
+if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
@@ -28,18 +27,25 @@ const createWindow = () => {
     height: 600,
     webPreferences: {
       nodeIntegration: true,
-      enableRemoteModule: true
+      enableRemoteModule: true,
+      devTools: false
     }
   });
-  // mainWindow.removeMenu();
+  mainWindow.removeMenu();
 
   // and load the index.html of the app.
   mainWindow.loadURL(MAIN_WINDOW_WEBPACK_ENTRY);
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
-  let rawdata = fs.readFileSync('GabroConfig.json');
-  CONFIG = JSON.parse(rawdata);
+  let rawdata;
+  try {
+    rawdata = fs.readFileSync('GabroConfig.json');
+    CONFIG = JSON.parse(rawdata);
+  } catch (err) {
+    return;
+    //TODO: error message
+  }
 
   ipcMain.on("send-build", (e, input) => {
     SaveAndCompile(input);
@@ -56,13 +62,18 @@ const createWindow = () => {
 
       project_path = input;
     }
-
-    let raw = fs.readFileSync(project_path + "/" + BUILD_FILE_NAME);
-    let build = JSON.parse(raw);
+    let raw;
+    let build;
+    try {
+      raw = fs.readFileSync(project_path + "/" + BUILD_FILE_NAME);
+      build = JSON.parse(raw);
+    } catch (err) {
+      return;
+      //TODO: error message
+    }
     SaveAndCompile(build);
     e.reply("build_update", build);
     return;
-    //console.log("Executing: " + "cd " + project_path + " ; npm start")
     exec("npm start", {
       cwd: project_path
     }, (error, stdout) => {});
@@ -71,16 +82,21 @@ const createWindow = () => {
   ipcMain.on("create", (e, input) => {
     project_path = input;
 
-    console.log(input);
     exec("git clone https://github.com/JanSkvaril/gabro_template.git & cd gabro_template & npm i", {
       cwd: project_path
     }, (error, stdout) => {
       project_path += "/gabro_template";
-      let raw = fs.readFileSync(project_path + "/" + BUILD_FILE_NAME);
-      let build = JSON.parse(raw);
+      let raw;
+      let build;
+      try {
+        raw = fs.readFileSync(project_path + "/" + BUILD_FILE_NAME);
+        build = JSON.parse(raw);
+      } catch (err) {
+        return;
+        //TODO: error message
+      }
       SaveAndCompile(build);
       e.reply("build_update", build);
-      console.log("Done");
       exec("npm start", {
         cwd: project_path
       }, (error, stdout) => {});
@@ -103,38 +119,31 @@ const createWindow = () => {
 
 function SaveAndCompile(build) {
   //TODO add error messages
-  fs.writeFile(project_path + "/" + BUILD_FILE_NAME, JSON.stringify(build), (e) => {
+  try {
+    fs.writeFile(project_path + "/" + BUILD_FILE_NAME, JSON.stringify(build), (e) => {
 
-  });
-  fs.writeFile(project_path + "/src/App.jsx", Compile(build, CONFIG), (e) => {
+    });
+    fs.writeFile(project_path + "/src/App.jsx", Compile(build, CONFIG), (e) => {
 
-  });
+    });
+  } catch (err) {
+    return;
+    //TODO: error message
+  }
 }
 
 
 
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
 
-// Quit when all windows are closed, except on macOS. There, it's common
-// for applications and their menu bar to stay active until the user quits
-// explicitly with Cmd + Q.
+app.on('ready', createWindow);
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
   }
 });
-
 app.on('activate', () => {
-  // On OS X it's common to re-create a window in the app when the
-  // dock icon is clicked and there are no other windows open.
   if (BrowserWindow.getAllWindows().length === 0) {
     createWindow();
   }
 });
-
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and import them here.

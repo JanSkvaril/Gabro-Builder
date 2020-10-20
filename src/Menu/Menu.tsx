@@ -65,20 +65,22 @@ class Menu extends React.Component {
         })
     }
     render() {
-
-        return (
+        if (this.state.loading) {
+            return (
+                <div className="menu" >
+                    <div style={{ textAlign: "center" }}>
+                        <i> loading...</i>
+                        <LinearProgress />
+                    </div>
+                </div>);
+        }
+        else return (
             <div className="menu" >
                 <span className="menu-path">CURRENT PROJECT: {this.state.path}</span>
                 <Button onClick={this.Build.bind(this)} variant="text">Build</Button>
                 <Button onClick={this.Open.bind(this)} variant="text" > Open project</Button>
                 <Button onClick={this.Create.bind(this)} variant="text">Create new</Button>
-                {this.state.loading ?
-                    <div style={{ textAlign: "center" }}>
-                        <i> loading...</i>
-                        <LinearProgress />
-                    </div>
-                    : ""}
-            </div >)
+            </div >);
     }
 }
 
