@@ -56,6 +56,7 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
     }
     render() {
         let remove_button = <Button onClick={this.Remove.bind(this)} variant="text"><i>remove</i></Button>
+        if (this.state.name[this.state.name.length - 1] == "?") remove_button = <React.Fragment></React.Fragment>;
         if (this.state.type.split("|").length > 1) { //combo box
             let options = this.state.type.split("|");
             for (let i = 0; i < options.length; i++) {
