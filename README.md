@@ -1,11 +1,11 @@
-# Please read this ↓
-Please keep in mind that, this app is in **super early development**
 # Gabro Builder
-This is simmple app for building websites using Gabro Framework
+This is simple app for building websites using Gabro Framework
+## ⬇️ Please read this ⬇️
+Please keep in mind that, this app is in **super early development**
 ## How to install
--
+TODO
 ## How this works
-This app creates folder with real web project (using React and Gabro Framework - but you don't need any experience with these) and provides you UI for editing it. When you **Create** project, it downloads template from github.com. Then, every time you **Open** this project, it will open preview of your website in browser that updates every time you make a change. When you click **Build** your project, builder will generate folder containg your website (html, css and js) that you can upload to your hosting.
+This app creates folder with real web project (using React and (Gabro Framework)[https://github.com/JanSkvaril/Gabro-Framework] - but you don't need any experience with these) and provides you UI for editing it. When you **Create** project, it downloads template from github.com. Then, every time you **Open** this project, it will open preview of your website in browser that updates every time you make a change. When you click **Build** your project, builder will generate folder containg your website (html, css and js) that you can upload to your hosting.
 ## How to use
 ### Components
 Click *Add component* and choose component you want to add. In **Content** part of the new component you can add more components - some components can only be in some specific components. For example *Half* can only be in *Section*. 
