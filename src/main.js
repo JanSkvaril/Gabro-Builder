@@ -8,7 +8,6 @@ const fs = require('fs');
 if (require('electron-squirrel-startup')) {
   app.quit();
 }
-
 let project_path = "";
 const {
   exec
@@ -16,15 +15,16 @@ const {
 
 
 const Compile = require("./GabroCompiler").Compile;
-let CONFIG;
+let CONFIG = require('../GabroConfig.json')
 
 const BUILD_FILE_NAME = "Gabro-Build.json";
 
 const createWindow = () => {
   // Create the browser window.
   const mainWindow = new BrowserWindow({
-    width: 800,
-    height: 600,
+    width: 1000,
+    height: 800,
+    icon:__dirname+"./icon.ico",
     webPreferences: {
       nodeIntegration: true,
       enableRemoteModule: true,
@@ -40,8 +40,8 @@ const createWindow = () => {
   mainWindow.webContents.openDevTools();
   let rawdata;
   try {
-    rawdata = fs.readFileSync('GabroConfig.json');
-    CONFIG = JSON.parse(rawdata);
+    // rawdata = fs.readFileSync('GabroConfig.json');
+    // CONFIG = JSON.parse(rawdata);
   } catch (err) {
     console.log(err);
     return;
