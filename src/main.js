@@ -9,7 +9,7 @@ if (require('electron-squirrel-startup')) {
   app.quit();
 }
 
-let project_path = "../gabro_template";
+let project_path = "";
 const {
   exec
 } = require('child_process')
@@ -43,8 +43,8 @@ const createWindow = () => {
     rawdata = fs.readFileSync('GabroConfig.json');
     CONFIG = JSON.parse(rawdata);
   } catch (err) {
+    console.log(err);
     return;
-    //TODO: error message
   }
 
   ipcMain.on("send-build", (e, input) => {
@@ -68,12 +68,12 @@ const createWindow = () => {
       raw = fs.readFileSync(project_path + "/" + BUILD_FILE_NAME);
       build = JSON.parse(raw);
     } catch (err) {
+      console.log(err);
       return;
-      //TODO: error message
     }
     SaveAndCompile(build);
     e.reply("build_update", build);
-    return;
+    console.log(project_path);
     exec("npm start", {
       cwd: project_path
     }, (error, stdout) => {});
@@ -82,18 +82,18 @@ const createWindow = () => {
   ipcMain.on("create", (e, input) => {
     project_path = input;
 
-    exec("git clone https://github.com/JanSkvaril/gabro_template.git & cd gabro_template & npm i", {
+    exec("git clone https://github.com/JanSkvaril/Gabro-Template.git & cd Gabro-Template & npm i", {
       cwd: project_path
     }, (error, stdout) => {
-      project_path += "/gabro_template";
+      project_path += "/Gabro-Template";
       let raw;
       let build;
       try {
         raw = fs.readFileSync(project_path + "/" + BUILD_FILE_NAME);
         build = JSON.parse(raw);
       } catch (err) {
+        console.log(err);
         return;
-        //TODO: error message
       }
       SaveAndCompile(build);
       e.reply("build_update", build);
@@ -118,7 +118,6 @@ const createWindow = () => {
 };
 
 function SaveAndCompile(build) {
-  //TODO add error messages
   try {
     fs.writeFile(project_path + "/" + BUILD_FILE_NAME, JSON.stringify(build), (e) => {
 
@@ -127,8 +126,8 @@ function SaveAndCompile(build) {
 
     });
   } catch (err) {
+    console.log(err);
     return;
-    //TODO: error message
   }
 }
 

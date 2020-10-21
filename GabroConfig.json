@@ -109,13 +109,13 @@
                 "name": "bgBehindText?",
                 "type": "bg"
             }, {
-                "name": "parallax",
+                "name": "parallax?",
                 "type": "boolean"
             }, {
-                "name": "imgEndToEndPhone",
+                "name": "imgEndToEndPhone?",
                 "type": "boolean"
             }, {
-                "name": "block",
+                "name": "block?",
                 "type": "string"
             }],
             "can_be_in": ["root"]
@@ -129,10 +129,10 @@
                 "type": "color"
             }, {
                 "name": "paddingBot?",
-                "type": "string"
+                "type": "numberOfPixels"
             }, {
                 "name": "paddingTop?",
-                "type": "string"
+                "type": "numberOfPixels"
             }, {
                 "name": "styled?",
                 "type": "boolean"
@@ -144,7 +144,7 @@
                 "type": "any"
             }, {
                 "name": "height?",
-                "type": "string"
+                "type": "numberOfPixels"
             }],
             "can_be_in": ["Section"]
         },
@@ -157,10 +157,10 @@
                 "type": "color"
             }, {
                 "name": "paddingBot?",
-                "type": "string"
+                "type": "numberOfPixels"
             }, {
                 "name": "paddingTop?",
-                "type": "string"
+                "type": "numberOfPixels"
             }, {
                 "name": "styled?",
                 "type": "boolean"
@@ -172,7 +172,7 @@
                 "type": "any"
             }, {
                 "name": "height?",
-                "type": "string"
+                "type": "numberOfPixels"
             }],
             "can_be_in": ["Section"]
         },
@@ -185,10 +185,10 @@
                 "type": "color"
             }, {
                 "name": "paddingBot?",
-                "type": "string"
+                "type": "numberOfPixels"
             }, {
                 "name": "paddingTop?",
-                "type": "string"
+                "type": "numberOfPixels"
             }, {
                 "name": "styled?",
                 "type": "boolean"
@@ -200,23 +200,23 @@
                 "type": "any"
             }, {
                 "name": "height?",
-                "type": "string"
+                "type": "numberOfPixels"
             }],
             "can_be_in": ["Section"]
         },
         "Section": {
             "props": [{
                 "name": "height?",
-                "type": "string"
+                "type": "numberOfPixels"
             }, {
                 "name": "shadow?",
                 "type": "boolean"
             }, {
                 "name": "bg?",
-                "type": "string"
+                "type": "bg"
             }, {
                 "name": "color?",
-                "type": "string"
+                "type": "color"
             }, {
                 "name": "bgSize?",
                 "type": "string"
@@ -225,10 +225,10 @@
                 "type": "string"
             }, {
                 "name": "paddingBot?",
-                "type": "string"
+                "type": "numberOfPixels"
             }, {
                 "name": "paddingTop?",
-                "type": "string"
+                "type": "numberOfPixels"
             }, {
                 "name": "styled?",
                 "type": "boolean"
@@ -237,7 +237,7 @@
                 "type": "\"left\" | \"right\""
             }, {
                 "name": "line?",
-                "type": "string"
+                "type": "bg"
             }, {
                 "name": "className?",
                 "type": "string"
@@ -256,31 +256,25 @@
                 "type": "boolean"
             }, {
                 "name": "color?",
-                "type": "bg"
-            }, {
-                "name": "txtColor?",
                 "type": "color"
             }, {
-                "name": "menu",
-                "type": "{ text"
-            }, {
-                "name": "version",
-                "type": "\"v1\" | \"v2\""
-            }, {
-                "name": "title",
-                "type": "string"
+                "name": "bg?",
+                "type": "bg"
             }, {
                 "name": "bgFilter",
                 "type": "string"
             }, {
-                "name": "children?",
-                "type": "any"
+                "name": "children",
+                "type": "Array<JSX.Element>"
             }],
             "can_be_in": ["root"]
         },
-        "NavbarLink": {
+        "NavbarTab": {
             "props": [{
-                "name": "text",
+                "name": "type",
+                "type": "\"brand\" | \"tab\""
+            }, {
+                "name": "children",
                 "type": "string"
             }, {
                 "name": "link",
@@ -310,7 +304,7 @@
                 "type": "string"
             }, {
                 "name": "height?",
-                "type": "string"
+                "type": "numberOfPixels"
             }, {
                 "name": "bgFilter?",
                 "type": "string"
@@ -331,7 +325,7 @@
                 "type": "color"
             }, {
                 "name": "icon?",
-                "type": "JSX.Element"
+                "type": "filePath"
             }, {
                 "name": "headline?",
                 "type": "string"
@@ -393,7 +387,7 @@
                 "type": "\"v1\" | \"v2\" | \"v3\""
             }, {
                 "name": "orientation",
-                "type": "\"left\" | \"right\""
+                "type": "\"left\" | \"right\" | \"center\""
             }, {
                 "name": "iconColor?",
                 "type": "color"
@@ -401,7 +395,7 @@
                 "name": "blockColor?",
                 "type": "color"
             }, {
-                "name": "blockOrientation",
+                "name": "blockOrientation?",
                 "type": "\"top\" | \"bot\""
             }, {
                 "name": "txtShadow?",

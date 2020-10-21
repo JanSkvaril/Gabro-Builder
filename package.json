@@ -83,11 +83,8 @@
     "@types/react": "^16.9.49",
     "@types/react-dom": "^16.9.8",
     "electron-squirrel-startup": "^1.0.0",
-    "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-color": "^2.18.1",
-    "react-dom": "^16.13.1",
-    "sass": "^1.26.11",
-    "sass-loader": "^10.0.2"
+    "react-dom": "^16.13.1"
   }
 }

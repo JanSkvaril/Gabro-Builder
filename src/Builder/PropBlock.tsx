@@ -59,8 +59,9 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
         if (this.state.type.split("|").length > 1) { //combo box
             let options = this.state.type.split("|");
             for (let i = 0; i < options.length; i++) {
-                options[i] = options[i].replaceAll('"', "");
+                options[i] = options[i].replaceAll('"', "").trim();
             }
+
             return (
                 <div className="prop-block">
                     <b> {this.state.name}:</b> <ComboBox onChange={this.Changed.bind(this)} options={options} val={this.state.val} />
@@ -189,7 +190,7 @@ class ComboBox extends React.Component<ComboBoxProps> {
         })
     }
     render() {
-        if (this.state.val == -1) return;
+        if (this.state.val == -1) return <span></span>;
         let menu: any = [];
         let i = 0;
         for (let item of this.props.options) {
