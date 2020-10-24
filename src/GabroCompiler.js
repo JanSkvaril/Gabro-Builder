@@ -82,7 +82,7 @@ function WrapWithBase(data, config) {
     import './App.scss';\n \
     import {" +
     imports +
-    "} from '@janskvaril/gabro-framework'\n \
+    "} from 'gabro-framework'\n \
     function App() {\n \
       return (\n \
         <div>\n " +
