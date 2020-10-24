@@ -206,7 +206,7 @@ class ComponentBlock extends React.Component<BlockProps, BlockState> {
             i++;
         }
 
-        let header = <div> <h3>{this.state.name} {this.state.id}</h3>
+        let header = <div> <h3>{this.state.name}</h3>
             <Button onClick={this.Delete.bind(this)}>Delete</Button>
             <Button onClick={this.MoveDown.bind(this)}>DOWN</Button>
             <Button onClick={this.MoveUp.bind(this)}>UP</Button>

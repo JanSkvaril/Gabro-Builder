@@ -1,7 +1,7 @@
 {
   "name": "gabro-builder",
   "productName": "Gabro Builder",
-  "version": "3.0.0",
+  "version": "3.0.2",
   "description": "UI for building websites using Gabro Framework",
   "main": ".webpack/main",
   "scripts": {

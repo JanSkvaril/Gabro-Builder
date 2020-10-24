@@ -44,9 +44,14 @@ function ConvertToJsx(component, config) {
       if (prop.val.gradient.length > 0) {
         let col1 = `rgba(${prop.val.gradient[0].r}, ${prop.val.gradient[0].g}, ${prop.val.gradient[0].b}, ${prop.val.gradient[0].a})`
         let col2 = `rgba(${prop.val.gradient[1].r}, ${prop.val.gradient[1].g}, ${prop.val.gradient[1].b}, ${prop.val.gradient[1].a})`
-        val += `{"linear-gradient(${col1}, ${col2}), "+`;
+        val += `{"linear-gradient(${col1}, ${col2})`;
       }
-      val += `GetImage(require("${prop.val.bgImagePath.replaceAll("\\", "\\\\")}"))}`;
+      if (prop.val.bgImagePath != ""){
+      val += `, "+GetImage(require("${prop.val.bgImagePath.replaceAll("\\", "\\\\")}"))}`;
+      }
+      else{
+        val+='"}';
+      }
     }
 
     props += " " + name + '=' + val + ' ';
