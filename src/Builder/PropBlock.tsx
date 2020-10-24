@@ -56,7 +56,8 @@ class PropBlock extends React.Component<PropBlockProps, PropBlockState> {
     }
     render() {
         let remove_button = <Button onClick={this.Remove.bind(this)} variant="text"><i>remove</i></Button>
-        if (this.state.name[this.state.name.length - 1] == "?") remove_button = <React.Fragment></React.Fragment>;
+        console.log(this.state.name[this.state.name.length]);
+        if (this.state.name[this.state.name.length - 1] != "?") remove_button = <React.Fragment></React.Fragment>;
         if (this.state.type.split("|").length > 1) { //combo box
             let options = this.state.type.split("|");
             for (let i = 0; i < options.length; i++) {
@@ -336,6 +337,7 @@ class BgPicker extends React.Component<BgProps> {
         this.state = {
             gradient: props.val.gradient || [{ r: 0, g: 0, b: 0, a: 0 }, { r: 0, g: 0, b: 0, a: 0 }],
             bgImagePath: props.val.bgImagePath || "",
+            isGradient: false
         };
     }
     Update = () => {
@@ -349,6 +351,12 @@ class BgPicker extends React.Component<BgProps> {
         new_gradient[0] = color;
         if (JSON.stringify(this.state.gradient[0]) == JSON.stringify({ r: 0, g: 0, b: 0, a: 0 })) {
             new_gradient[0].a = 1;
+        }
+        if (this.state.isGradient == false) {
+            new_gradient[1] = color;
+            if (JSON.stringify(this.state.gradient[1]) == JSON.stringify({ r: 0, g: 0, b: 0, a: 0 })) {
+                new_gradient[1].a = 1;
+            }
         }
         this.setState({
             gradient: new_gradient
@@ -369,14 +377,28 @@ class BgPicker extends React.Component<BgProps> {
             bgImagePath: path
         }, this.Update)
     }
+    CheckBoxChanged(e) {
+        this.setState(
+            {
+                isGradient: e.target.checked
+            }
+        );
+
+    }
     render() {
 
         return (
             <div>
-                <div style={{ width: "100%", height: "40px" }}>
-                    <b style={{ float: "left", margin: "5px" }}>Background Gradient:</b>
+                <div style={{ width: "100%", height: "75px" }}>
+                    <FormControlLabel
+                        control={
+                            <Checkbox onChange={this.CheckBoxChanged.bind(this)} checked={Boolean(this.state.isGradient)} color="default" name="checkedA" />
+                        }
+                        label={"Gradient"}
+                    /> <br />
+                    <b style={{ float: "left", margin: "5px" }}>Color:</b>
                     <ColorPicker color={this.state.gradient[0]} onChange={this.ChangeFirstColor} />
-                    <ColorPicker color={this.state.gradient[1]} onChange={this.ChangeSecondColor} />
+                    {this.state.isGradient ? <ColorPicker color={this.state.gradient[1]} onChange={this.ChangeSecondColor} /> : ""}
                 </div>
 
                 <div style={{ width: "100%", margin: "5px" }}>
