@@ -4,10 +4,10 @@ This is simple app for building websites using Gabro Framework
 Please keep in mind that, this app is in **super early development**
 ## How to install
 ### Before install
-Please make sure, you have [git](https://git-scm.com/) and [Node.js](https://nodejs.org/en/). 
+Please make sure, you have [git](https://git-scm.com/) and [Node.js](https://nodejs.org/en/) installed. 
 ### Installation
 #### Windows
-TODO
+Download latest *Gabro.Builder.Setup.exe* in [releases](https://github.com/JanSkvaril/Gabro-Builder/releases/). This will install latest version using [Squirrel](https://github.com/Squirrel/Squirrel.Windows).
 #### Linux
 TODO
 ## How this works
